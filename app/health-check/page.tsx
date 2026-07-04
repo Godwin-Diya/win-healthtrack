@@ -9,19 +9,14 @@ export default function HealthCheckPage() {
     function checkResult() {
         const glucoseNumber = Number(glucose);
         if (glucoseNumber < 70) {
-            setResult("🟠 Low Blood Glucose");
+            setResult("🟠 Low Blood Glucose. Please eat or drink something containing carbohydrates and seek medical advice if symptoms persist.");
         } else if (glucoseNumber <= 99) {
-            setResult("🟢 Normal Blood Glucose");
+            setResult("🟢 Normal Blood Glucose. Great job! Continue maintaining a healthy lifestyle.");
         } else {
-            setResult("🔴 High Blood Glucose");
+            setResult("🔴 High Blood Glucose. Consider speaking with a healthcare professional for proper evaluation.");
         }
     }
-
-    <p className="mt-6 text-center text-xl font-semibold text-green-700">
-        {result}
-    </p>
-
-    return (
+return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
             <h1 className="text-4xl font-bold text-blue-700">
@@ -66,9 +61,25 @@ export default function HealthCheckPage() {
                         Check Result
                     </button>
 
-                    <p className="mt-6 text-center text-xl font-semibold text-green-700">
-                        {result}
-                    </p>
+                    {result && (
+            <div className="mt-6 rounded-xl border p-5 shadow-md">
+                <h2 className="text-2xl font-bold">
+                    {result}
+                </h2>
+
+                <p className="mt-3 text-gray-700">
+                    Your result is based on the information you entered.
+                </p>
+
+                <p className="mt-3">
+                    💡Healthy Tip: Drink enough water, balanced meals and stay physically active.
+                </p>
+
+                <p className="mt-4 text-sm text-gray-500">
+                    ⚠️ Educational Notice: This tool is designed for learning and health awareness. It is not a medical diagnosis.
+                </p>
+            </div>
+        )}
                     
 
 
