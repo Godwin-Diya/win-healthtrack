@@ -6,8 +6,9 @@ export default function HealthCheckPage() {
     const [glucose, setGlucose] = useState("");
     const [result, setResult] = useState("");
     const [isFasting, setIsFasting] = useState("");
-
     const [cardColor, setCardColor] = useState("bg-gray-100");
+    const [explanation, setExplanation] = useState("");
+    const [advice, setAdvice] = useState("");
 
     function checkResult() {
         if (age === "" || glucose === "") {
@@ -27,15 +28,47 @@ export default function HealthCheckPage() {
             return;
         }
         const glucoseNumber = Number(glucose);
-        if (glucoseNumber < 70) {
-            setResult("🟠 Low Blood Glucose. Please eat or drink something containing carbohydrates and seek medical advice if symptoms persist."); 
-            setCardColor("bg-yellow-100");
-        } else if (glucoseNumber <= 99) {
-            setResult("🟢 Normal Blood Glucose. Great job! Continue maintaining a healthy lifestyle.");
-            setCardColor("bg-green-100");
+
+        if (isFasting === "yes") {
+            if (glucoseNumber < 70) {
+                setResult(
+                    "🟠 lower than the expexcted fasting range."
+                );
+                setCardColor("bg-yellow-100");
+            } else if (glucoseNumber <= 99) {
+                setResult(
+                    "🟢 Normal Blood Glucose.");
+                setExplanation(
+                    "Your fasting blood glucose reading is within the expexcted range."
+                );
+
+                setAdvice(
+                    "Continue maintaining a balanced diet, regular, physical activity and healthy lifestyle habits."
+                );
+                setCardColor("bg-green-100");
+            } else {
+                setResult(
+                    "🔴 Higher than the expected fasting range."
+                );
+                setCardColor("bg-red-100");
+            }
         } else {
-            setResult("🔴 High Blood Glucose. Consider speaking with a healthcare professional for proper evaluation.");
-            setCardColor("bg-red-100");
+            if (glucoseNumber < 70) {
+                setResult(
+                    "🟠 Lower than the expected range."
+                );
+                setCardColor("bg-yellow-100");
+            } else if (glucoseNumber <= 140) {
+                setResult(
+                    "🟢 Within the expected non-fasting range."
+                );
+                setCardColor("bg-green-100");
+            } else {
+                setResult(
+                    "🔴 Higher than the expected non-fasting range."
+                );
+                setCardColor("bg-red-100");
+            }
         }
     }
 
@@ -44,6 +77,8 @@ export default function HealthCheckPage() {
         setGlucose("");
         setIsFasting("");
         setResult("");
+        setExplanation("");
+        setAdvice("");
         setCardColor("bg-gray-100");
     }
 
@@ -131,20 +166,32 @@ return (
                     {result && (
                     <div className={`mt-6 rounded-xl border p-5 shadow-md ${cardColor}`}>
                 <h2 className="text-2xl font-bold">
-                    {result}
-                </h2>
+                            {result}
+                        </h2>
+                        
+                <div className="mt-4">
+                <h3 className="font-semibold">
+                📖 Meaning
+                </h3>
 
                 <p className="mt-3 text-gray-700">
-                    Your result is based on the information you entered.
+                {explanation}
                 </p>
+                </div>    
+                        
+                        <div className="mt-4">
+                            <h3 className="font-semibold">
+                                💡Recommendation
+                            </h3>
+                <p className="text-gray-700"> {advice}
+                            </p>
+                        </div>
+                        
+                        <div className="mt-5 text-sm text-gray-500">
+                            ⚠️ This tool provides health education and awareness. It does not replace professional medical advice.
+                        </div>
+                
 
-                <p className="mt-3">
-                    💡Healthy Tip: Drink enough water, balanced meals and stay physically active.
-                </p>
-
-                <p className="mt-4 text-sm text-gray-500">
-                    ⚠️ Educational Notice: This tool is designed for learning and health awareness. It is not a medical diagnosis.
-                </p>
             </div>
         )}
                     
