@@ -10,6 +10,13 @@ export default function HealthCheckPage() {
     const [cardColor, setCardColor] = useState("bg-gray-100");
     const [explanation, setExplanation] = useState("");
     const [advice, setAdvice] = useState("");
+    const [history, setHistory] = useState < {
+        age: string;
+        glucose: string;
+        fasting: string;
+        result: string;
+    }[]
+    >([])
 
     function checkResult() {
         if (age === "" || glucose === "") {
@@ -102,7 +109,8 @@ export default function HealthCheckPage() {
                     Check your blood glucose level without creating an account.
                 </p>
                 <div className="mt-6">
-                    <label className="block font-medium">
+
+                    <label className="font-medium">
                         Age
                     </label>
 
@@ -118,17 +126,17 @@ export default function HealthCheckPage() {
                 </div>
 
                 <div className="mt-6">
-                    <label className="block font-medium">
+                    <label className="font-medium">
                         Blood Glucose (mg/dL)
                     </label>
 
                     <input
                         type="number"
-                        placeholder="Enter your blood glucose"
+                        placeholder="e.g. 95"
                         value={glucose}
                         onChange={(event) =>
                             setGlucose(event.target.value)}
-                        className="w-full border rounded-lg p-3 mt-2"
+                        className="w-full mt-2 p-3 border rounded-lg"
                     />
                 
                     <div className="mt-6">
