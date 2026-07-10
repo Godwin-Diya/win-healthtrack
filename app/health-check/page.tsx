@@ -10,7 +10,7 @@ export default function HealthCheckPage() {
     const [cardColor, setCardColor] = useState("bg-gray-100");
     const [explanation, setExplanation] = useState("");
     const [advice, setAdvice] = useState("");
-    const [history, setHistory] = useState < {
+    const [history, setHistory] = useState<{
         age: string;
         glucose: string;
         fasting: string;
@@ -43,49 +43,85 @@ export default function HealthCheckPage() {
             return;
         }
         
+
+        let resultMessage = "";
+        let explanationMessage = "";
+        let adviceMessage = "";
+        let cardColorMessage = "bg-gray-100";
         const glucoseNumber = Number(glucose);
 
         if (isFasting === "yes") {
             if (glucoseNumber < 70) {
-                setResult(
-                    "🟠 lower than the expexcted fasting range."
-                );
-                setCardColor("bg-yellow-100");
-            } else if (glucoseNumber <= 99) {
-                setResult(
-                    "🟢 Normal Blood Glucose.");
-                setExplanation(
-                    "Your fasting blood glucose reading is within the expexcted range."
-                );
+                resultMessage = "🟠 lower than the expexcted fasting range.";
 
-                setAdvice(
-                    "Continue maintaining a balanced diet, regular, physical activity and healthy lifestyle habits."
-                );
-                setCardColor("bg-green-100");
+                explanationMessage = "Your blood glucose reading is below the expected fasting range.";
+
+                adviceMessage = "If you have symptoms such as dizziness, sweating, or confusion, seek appropriate medical advice promptly.";
+
+                setCardColor("bg-yellow-100");
+
+            } else if (glucoseNumber <= 99) {
+                resultMessage = "🟢 Normal Blood Glucose";
+
+                explanationMessage = "Your fasting blood glucose reading is within the expected range.";
+
+                adviceMessage = "Continue maintaining a balanced diet, regular physical activity and healthy lifestyle habits.";
+                
+                cardColorMessage = "bg-green-100"
             } else {
-                setResult(
-                    "🔴 Higher than the expected fasting range."
-                );
+                resultMessage = "🔴 Higher than the expected fasting range.";
+
+                explanationMessage = "Your fasting blood glucose reading is above the expected range.";
+
+                adviceMessage = "Consider monitoring your blood glucode regularly and discussing persistent high readings with a healthcare professional.";
+
                 setCardColor("bg-red-100");
             }
         } else {
             if (glucoseNumber < 70) {
-                setResult(
-                    "🟠 Lower than the expected range."
-                );
+                resultMessage = "🟠 Lower than the expected range.";
+
+                explanationMessage = "Your blood glucose reading is below the expected fasting range.";
+
+                adviceMessage = "If you have symptoms such as dizziness, sweating, or confusion, seek appropriate medical advice promptly.";
+
                 setCardColor("bg-yellow-100");
+
             } else if (glucoseNumber <= 140) {
-                setResult(
-                    "🟢 Within the expected non-fasting range."
-                );
+                resultMessage = "🟢 Within the expected non-fasting range."
+
+                explanationMessage = "Your fasting blood glucose reading is within the expected range.";
+
+                adviceMessage = "Continue maintaining a balanced diet, regular physical activity and healthy lifestyle habits.";
+
                 setCardColor("bg-green-100");
+
             } else {
-                setResult(
-                    "🔴 Higher than the expected non-fasting range."
-                );
+                resultMessage = "🔴 Higher than the expected non-fasting range."
+
+                explanationMessage = "Your fasting blood glucose reading is above the expected range.";
+
+                adviceMessage = "Consider monitoring your blood glucode regularly and discussing persistent high readings with a healthcare professional.";
+
                 setCardColor("bg-red-100");
             }
         }
+
+        setResult(resultMessage);
+        setExplanation(explanationMessage);
+        setAdvice(adviceMessage);
+        setCardColor(cardColorMessage);
+
+        setHistory((previousHistory) => [
+            {
+                age,
+                glucose,
+                fasting: isFasting,
+                result: resultMessage,
+            },
+            ...previousHistory,
+        ]);
+
     }
 
     function resetForm() {
@@ -185,13 +221,38 @@ export default function HealthCheckPage() {
                             result={result}
                             explanation={explanation}
                             advice={advice}
+                            cardColor={cardColor}
                         />
                     )}
-                    
-
 
                 </div>
 
+                {history.length > 0 && (
+                    <div className="mt-8">
+                        <h2 className="text-xl font-bold mb-4">
+                            Recent Checks
+                        </h2>
+                        {history.map((item, index) => (
+                            <div
+                                key={index}
+                                className="border rounded-lg p-4 mb-3">
+                                            
+                                <p><strong>Age:</strong>
+                                    {item.age}</p>
+                                            
+                                <p><strong>Blood Glucose:</strong>
+                                    {item.glucose} mg/dL</p>
+                                            
+                                <p><strong>Fasting:</strong>{""}
+                                    {item.fasting === "yes" ? "Yes" : "No"}
+                                </p>
+
+                                <p><strong>Result:</strong>{item.result}</p>
+                            </div>
+                        ))}
+                    
+                    </div>
+                )}
             </div>
         </main>
     );

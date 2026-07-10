@@ -2,15 +2,17 @@ type ResultCardProps = {
     result: string;
     explanation: string;
     advice: string;
+    cardColor: string;
 };
 
 export default function ResultCard({
     result,
     explanation,
     advice,
+    cardColor,
 }: ResultCardProps) {
     return (
-        <div className="mt-6 rounded-xl border p-5 shadow-md bg-white">
+        <div className={`mt-6 rounded-xl border p-5 shadow-md ${cardColor}`}>
             <h2 className="text-2xl font-bold">
                 {result}
             </h2>
