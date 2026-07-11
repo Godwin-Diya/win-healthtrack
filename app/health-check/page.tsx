@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ResultCard from "@/components/ResultCard"; 
 
 export default function HealthCheckPage() {
@@ -15,8 +15,24 @@ export default function HealthCheckPage() {
         glucose: string;
         fasting: string;
         result: string;
-    }[]
-    >([])
+    }[]>(() => {
+        if (typeof window === "undefined") {
+            return [];
+        }
+    
+        const savedHistory =
+            localStorage.getItem("healthHistory");
+        
+        return savedHistory ?
+            JSON.parse(savedHistory) : [];
+    });
+    
+    useEffect(() => {
+        localStorage.setItem(
+            "healthHistory",
+            JSON.stringify(history)
+        );
+    }, [history]);
 
     function checkResult() {
         if (age === "" || glucose === "") {
