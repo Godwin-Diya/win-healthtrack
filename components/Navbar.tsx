@@ -11,28 +11,28 @@ export default function Navbar() {
 
         <div className="flex items-center gap-6">
                 <Link
-                    href="/"
+                    href="/app/dashboard/page.tsx"
                     className="text-gray-700 hover:text-blue-600 transition"
                 >
                     Home
                 </Link>
                 
                 <Link
-                    href="/"
+                    href="/app/health-check/page.tsx"
                 className="text-gray-700 hover:text-blue-600 transition"
                 >
                     Quick Health Check
                 </Link>
 
                 <Link
-                    href="/login"
+                    href="/app/login/page.tsx"
                 className="text-gray-700 hover:text-blue-600 transition"
                 >
                     Log In
                 </Link>
 
                 <Link
-                    href="/signup"
+                    href="/app/signup/page.tsx"
                     className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
                 >
                     Create Account

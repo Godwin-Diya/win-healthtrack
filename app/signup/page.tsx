@@ -3,8 +3,10 @@ import { useState } from "react";
 
 export default function SignUpPage()
 {
-    const [fullName, setFullname] =
-        useState("");
+    const [fullName, setFullname] = useState("");
+    const [email, setEmail] = useState("")
+
+
     return (
         <main className="min-h-screen flex items-center justify-center px-6">
             <div className="w-full max-w-md rounded-xl border p-8 shadow-md">
@@ -29,6 +31,20 @@ export default function SignUpPage()
                             setFullname(e.target.value)}
                         placeholder="Enter your full name"
                         className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <div className="mt-4">
+                    <label className="block mb-2 font-medium">
+                        Email Address     
+                    </label>
+
+                    <input
+                        type="email"
+                        value={email}  
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email address"
+                        className="w-full rounde-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
                 
