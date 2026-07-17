@@ -1,5 +1,6 @@
 import Link from "next/link";
 import loginPage from "./login/page";
+import Navbar from "@/components/Navbar";
 
 export default function Home()  {
   return ( 
