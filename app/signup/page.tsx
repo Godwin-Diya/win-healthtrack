@@ -5,7 +5,41 @@ export default function SignUpPage()
 {
     const [fullName, setFullname] = useState("");
     const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    
+    function handleSignup() {
+        setError("");
+        if (!fullName.trim()) {
+            setError("Please enter your full name.");
+            return;
+        }
 
+        if (!email.trim()) {
+            setError("Please enter your email address.");
+            return;
+        }
+
+        if (!password) {
+            setError("Please create a password.");
+            return;
+        }
+
+        if (!confirmPassword) {
+            setError("Please confirm your password.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
+        }
+
+        setError("");
+        alert("Account created successfully!");
+    }
 
     return (
         <main className="min-h-screen flex items-center justify-center px-6">
@@ -47,6 +81,56 @@ export default function SignUpPage()
                         className="w-full rounde-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
+
+                <div className="mt-4">
+                    <label className="block mb-2 font-medium">
+                        Password
+                    </label>
+
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) =>
+                            setPassword(e.target.value)}
+                        placeholder="Create a password"
+                        className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="mt-2 text-sm text-blue-600 hover:underline">
+                    {showPassword ? "⁻ Hide Password" : "👁️ Show Password"}
+                </button>
+                
+                <div className="mt-4">
+                    <label className="block mb-2 font-medium">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm your password"
+                        className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+
+                {error && (
+                    <p className="mt-4 text-red-600 font-medium">
+                        {error}
+                    </p>
+                )}
+
+                <button
+                    onClick={handleSignup}
+                    className="mt-6 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 transition"
+                >
+                    Create Account
+                </button>
+
                 
             </div>
 
