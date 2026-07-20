@@ -9,6 +9,8 @@ export default function SignUpPage()
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const emailPattern = / ^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     
     function handleSignup() {
         setError("");
@@ -22,6 +24,10 @@ export default function SignUpPage()
             return;
         }
 
+        if (!emailPattern.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
         if (!password) {
             setError("Please create a password.");
             return;
@@ -29,6 +35,13 @@ export default function SignUpPage()
 
         if (!confirmPassword) {
             setError("Please confirm your password.");
+            return;
+        }
+
+        if (!passwordPattern.test(password)) {
+            setError(
+                "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter and a number."
+            );
             return;
         }
 
@@ -91,8 +104,22 @@ export default function SignUpPage()
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) =>
-                            setPassword(e.target.value)}
+                        setPassword(e.target.value)}
                         placeholder="Create a password"
+                        className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                
+                <div className="mt-4">
+                    <label className="block mb-2 font-medium">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm your password"
                         className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
@@ -101,22 +128,8 @@ export default function SignUpPage()
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="mt-2 text-sm text-blue-600 hover:underline">
-                    {showPassword ? "⁻ Hide Password" : "👁️ Show Password"}
+                    {showPassword ? "⁕ Hide Password" : "👁️ Show Password"}
                 </button>
-                
-                <div className="mt-4">
-                    <label className="block mb-2 font-medium">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm your password"
-                        className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
 
                 {error && (
                     <p className="mt-4 text-red-600 font-medium">
@@ -137,3 +150,4 @@ export default function SignUpPage()
         </main>
     );
 }
+
