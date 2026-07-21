@@ -1,5 +1,11 @@
 "use client";
-import { useState } from "react";       
+import { useState } from "react";    
+
+type User = {
+    fullName: string;
+    email: string;
+    password: string;
+};
 
 export default function SignUpPage()
 {
@@ -9,7 +15,7 @@ export default function SignUpPage()
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const emailPattern = / ^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
     
     function handleSignup() {
@@ -51,7 +57,20 @@ export default function SignUpPage()
         }
 
         setError("");
+        const newUser: User = {
+            fullName,
+            email,
+            password,
+        };
+
+        const existingUsers = localStorage.getItem("users");
+        const users: User[] = existingUsers ? JSON.parse(existingUsers) : [];
+        users.push(newUser);
+        
+        localStorage.setItem("users", JSON.stringify(users));
+
         alert("Account created successfully!");
+
     }
 
     return (
