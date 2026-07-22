@@ -62,13 +62,19 @@ export default function SignUpPage()
             email,
             password,
         };
-
+    
         const existingUsers = localStorage.getItem("users");
         const users: User[] = existingUsers ? JSON.parse(existingUsers) : [];
-        users.push(newUser);
-        
-        localStorage.setItem("users", JSON.stringify(users));
+        const emailExists = users.some((user) => user.email.toLowerCase() === email.toLowerCase());
 
+        if (emailExists) {
+            setError(
+                "An account with this email already exists."
+            );
+            return;
+        }
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
         alert("Account created successfully!");
 
     }
