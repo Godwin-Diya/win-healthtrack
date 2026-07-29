@@ -4,12 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HealthRecordForm from "@/components/hrf";
 
+    type HealthRecord = {
+    glucose: string;
+    fasting: string;
+    };
+
     type User = {
     fullName: string;
     email: string;
     password: string;
-    };
-
+    healthRecords?: HealthRecord[];
+};
+    
 export default function DashboardPage() {
 
     // 1. State
@@ -87,12 +93,31 @@ export default function DashboardPage() {
                 Recent Health Checks
             </h2>
 
-            <p className="mt-3 text-gray-600">
-                Your health history will appear here.
+            {user.healthRecords && user.healthRecords.length > 0 ? (
+            <div className="mt-4 space-y-4">
+            {user.healthRecords.map((record, index) => (
+            <div
+            key={index}
+            className="rounded-lg border p-4">
+            <p>
+                <strong>Blood Glucose:</strong> {record.glucose} mg/dL
+            </p>
+
+            <p>
+                <strong>Fasting:</strong> {record.fasting}
             </p>
             </div>
+            ))}
+            </div>
+            ) : (
+            
+            <p className="mt-3 text-gray-600">
+            No health records yet.
+            </p>
+            )}
+            </div>
 
-        <HealthRecordForm />
+            <HealthRecordForm />
             <button
             onClick={handleLogout}
             className="mt-8 rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700 transition"

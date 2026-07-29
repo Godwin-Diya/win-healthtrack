@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type HealthRecord = {
     glucose: string;
@@ -17,6 +18,7 @@ type User = {
 export default function HealthRecordForm() {
     const [glucose, setGlucose] = useState("");
     const [fasting, setFasting] = useState("yes");
+    const router = useRouter();
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -55,7 +57,11 @@ export default function HealthRecordForm() {
 
     return user;
         });
+        localStorage.setItem("users", JSON.stringify(updatedUsers));
+        router.refresh();
         
+        setGlucose("");
+        setFasting("yes");
     }
 
         return (
