@@ -19,6 +19,7 @@ export default function HealthRecordForm() {
     const [glucose, setGlucose] = useState("");
     const [fasting, setFasting] = useState("yes");
     const router = useRouter();
+    const [message, setMessage] = useState("");
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -45,7 +46,8 @@ export default function HealthRecordForm() {
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
         const savedUsers = localStorage.getItem("users");
-    if (!savedUsers) {
+        if (!savedUsers) {
+        setMessage("Health record saved successfully!");
     return;
     }
 
@@ -108,6 +110,13 @@ export default function HealthRecordForm() {
                 >
                     Save Record
                 </button>
+
+                {message && (
+                    <p className="mt-4 text-green-600 font-medium">
+                        {message}
+                    </p>)
+                }
+                
             </form>
         );
     }
