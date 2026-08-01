@@ -7,6 +7,7 @@ import HealthRecordForm from "@/components/hrf";
     type HealthRecord = {
     glucose: string;
     fasting: string;
+    date: string;
     };
 
     type User = {
@@ -69,9 +70,27 @@ export default function DashboardPage() {
                 🩺 Blood Glucose
                 </h2>
 
-                <p className="mt-3 text-gray-600">
-                No health checks yet.
-                </p>
+            {user.healthRecords && user.healthRecords.length > 0 ? (
+            <>
+            <p className="mt-3">
+            <strong>Total Records:</strong> {user.healthRecords.length}
+            </p>
+
+            <p className="mt-2">
+            <strong>Latest Reading:</strong>{" "}
+            {user.healthRecords[user.healthRecords.length - 1].glucose} mg/dL
+            </p>
+
+            <p className="mt-2">
+            <strong>Fasting:</strong>{" "}
+            {user.healthRecords[user.healthRecords.length - 1].fasting}
+            </p>
+            </>
+            ) : (
+            <p className="mt-3 text-gray-600">
+            No health checks yet.
+            </p>
+            )}
             </div>
 
 
@@ -106,6 +125,10 @@ export default function DashboardPage() {
             <p>
                 <strong>Fasting:</strong> {record.fasting}
             </p>
+            
+            <p>
+                <strong>Date:</strong>{record.date}
+            </p>       
             </div>
             ))}
             </div>
