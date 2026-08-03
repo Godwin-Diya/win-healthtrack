@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 type HealthRecord = {
     glucose: string;
     fasting: string;
+    date: string;
 };
 
 type User = {
@@ -27,7 +28,7 @@ export default function HealthRecordForm() {
         const newRecord: HealthRecord = {
             glucose,
             fasting,
-
+            date: new Date().toLocaleString(), 
         };
 
         const savedUser = localStorage.getItem("currentUser");

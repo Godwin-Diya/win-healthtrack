@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HealthRecordForm from "@/components/hrf";
+import DashboardSummary from "@/components/DS";
+import RecentHealthChecks from "@/components/RHC";
 
     type HealthRecord = {
     glucose: string;
@@ -16,7 +18,7 @@ import HealthRecordForm from "@/components/hrf";
     password: string;
     healthRecords?: HealthRecord[];
 };
-    
+
 export default function DashboardPage() {
 
     // 1. State
@@ -65,33 +67,9 @@ export default function DashboardPage() {
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
 
-            <div className="rounded-xl border p-6">
-                <h2 className="text-xl font-semibold">
-                🩺 Blood Glucose
-                </h2>
-
-            {user.healthRecords && user.healthRecords.length > 0 ? (
-            <>
-            <p className="mt-3">
-            <strong>Total Records:</strong> {user.healthRecords.length}
-            </p>
-
-            <p className="mt-2">
-            <strong>Latest Reading:</strong>{" "}
-            {user.healthRecords[user.healthRecords.length - 1].glucose} mg/dL
-            </p>
-
-            <p className="mt-2">
-            <strong>Fasting:</strong>{" "}
-            {user.healthRecords[user.healthRecords.length - 1].fasting}
-            </p>
-            </>
-            ) : (
-            <p className="mt-3 text-gray-600">
-            No health checks yet.
-            </p>
-            )}
-            </div>
+            <DashboardSummary
+            healthRecords={user.healthRecords ?? []}
+            />
 
 
             <div className="rounded-xl border p-6">
@@ -106,41 +84,15 @@ export default function DashboardPage() {
 
             </div>
 
-
-            <div className="mt-8 rounded-xl border p-6">
-            <h2 className="text-xl font-semibold">
-                Recent Health Checks
-            </h2>
-
-            {user.healthRecords && user.healthRecords.length > 0 ? (
-            <div className="mt-4 space-y-4">
-            {user.healthRecords.map((record, index) => (
-            <div
-            key={index}
-            className="rounded-lg border p-4">
-            <p>
-                <strong>Blood Glucose:</strong> {record.glucose} mg/dL
-            </p>
-
-            <p>
-                <strong>Fasting:</strong> {record.fasting}
-            </p>
-            
-            <p>
-                <strong>Date:</strong>{record.date}
-            </p>       
-            </div>
-            ))}
-            </div>
-            ) : (
-            
+            <RecentHealthChecks
+            healthRecords={user.healthRecords ?? []}
+/>
             <p className="mt-3 text-gray-600">
             No health records yet.
             </p>
-            )}
-            </div>
 
-            <HealthRecordForm />
+                    <HealthRecordForm />
+                    
             <button
             onClick={handleLogout}
             className="mt-8 rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700 transition"
