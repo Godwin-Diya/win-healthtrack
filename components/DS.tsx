@@ -1,4 +1,5 @@
 type HealthRecord = {
+    id: string;
     glucose: string;
     fasting: string;
     date: string;

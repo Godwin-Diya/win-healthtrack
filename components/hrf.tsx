@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type HealthRecord = {
+    id: string;
     glucose: string;
     fasting: string;
     date: string;
@@ -26,6 +27,7 @@ export default function HealthRecordForm() {
         e.preventDefault();
 
         const newRecord: HealthRecord = {
+            id: crypto.randomUUID(),
             glucose,
             fasting,
             date: new Date().toLocaleString(), 

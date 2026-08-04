@@ -6,7 +6,8 @@ import HealthRecordForm from "@/components/hrf";
 import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
 
-    type HealthRecord = {
+type HealthRecord = {
+    id: string;
     glucose: string;
     fasting: string;
     date: string;
