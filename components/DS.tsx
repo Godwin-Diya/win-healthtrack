@@ -1,9 +1,4 @@
-type HealthRecord = {
-    id: string;
-    glucose: string;
-    fasting: string;
-    date: string;
-};
+import type { HealthRecord } from "@/types/health";
 
 type DashboardSummaryProps = {
     healthRecords: HealthRecord[];

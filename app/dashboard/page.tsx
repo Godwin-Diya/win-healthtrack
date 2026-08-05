@@ -6,19 +6,7 @@ import HealthRecordForm from "@/components/hrf";
 import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
 
-type HealthRecord = {
-    id: string;
-    glucose: string;
-    fasting: string;
-    date: string;
-    };
-
-    type User = {
-    fullName: string;
-    email: string;
-    password: string;
-    healthRecords?: HealthRecord[];
-};
+import type { User } from "@/types/health";
 
 export default function DashboardPage() {
 

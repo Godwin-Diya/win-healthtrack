@@ -1,9 +1,4 @@
-type HealthRecord = {
-    id: string;
-    glucose: string;
-    fasting: string;
-    date: string;
-};
+import type { HealthRecord } from "@/types/health";
 
 type HealthRecordCardProps = {
     record: HealthRecord;
@@ -42,3 +37,4 @@ export default function HealthRecordCard({
     </div>
     );
 }
+

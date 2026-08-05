@@ -2,20 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-type HealthRecord = {
-    id: string;
-    glucose: string;
-    fasting: string;
-    date: string;
-};
-
-type User = {
-    fullName: string;
-    email: string;
-    password: string;
-    healthRecords?: HealthRecord[];
-};
+import type { HealthRecord, User } from "@/types/health";
     
 export default function HealthRecordForm() {
     const [glucose, setGlucose] = useState("");
