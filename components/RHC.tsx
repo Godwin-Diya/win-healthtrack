@@ -2,6 +2,7 @@ import type { HealthRecord } from "@/types/health";
 
 type RecentHealthChecksProps = {
     healthRecords: HealthRecord[];
+    onDelete: (id: string) => void;
 };
 
 
@@ -10,6 +11,7 @@ import HealthRecordCard from "@/components/HRC";
 
 export default function RecentHealthChecks({
     healthRecords,
+    onDelete
 }: RecentHealthChecksProps) {
     return (
     <div className="mt-8 rounded-xl border p-6">
@@ -23,6 +25,7 @@ export default function RecentHealthChecks({
             <HealthRecordCard
         key={index}
         record={record}
+        onDelete={onDelete}            
         />
         ))}
         </div>

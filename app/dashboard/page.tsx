@@ -33,6 +33,11 @@ export default function DashboardPage() {
     localStorage.removeItem("currentUser");
     router.replace("/");
     }
+    
+    function handleDelete(id: string) {
+    console.log("Delete record:", id);
+    }
+
 
     //5. Protection
     if (!user) {
@@ -75,12 +80,14 @@ export default function DashboardPage() {
 
             <RecentHealthChecks
             healthRecords={user.healthRecords ?? []}
-/>
+            onDelete={handleDelete}            
+            />
+                    
             <p className="mt-3 text-gray-600">
             No health records yet.
             </p>
 
-                    <HealthRecordForm />
+            <HealthRecordForm />
                     
             <button
             onClick={handleLogout}
