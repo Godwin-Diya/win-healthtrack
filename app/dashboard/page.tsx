@@ -35,7 +35,43 @@ export default function DashboardPage() {
     }
     
     function handleDelete(id: string) {
-    console.log("Delete record:", id);
+    if (!user) {
+    return;
+    }
+
+    const updatedHealthRecords =
+    user.healthRecords?.filter((record) => record.id !== id) ?? [];
+
+    const updatedUser = {
+    ...user,
+    healthRecords: updatedHealthRecords,
+    };
+
+    localStorage.setItem(
+    "currentUser",
+    JSON.stringify(updatedUser)
+    );
+
+    const savedUsers = localStorage.getItem("users");
+
+    if (savedUsers) {
+    const users: User[] = JSON.parse(savedUsers);
+
+    const updatedUsers = users.map((existingUser) => {
+        if (existingUser.email === user.email) {
+        return updatedUser;
+    }
+
+    return existingUser;
+    });
+
+    localStorage.setItem(
+        "users",
+        JSON.stringify(updatedUsers)
+    );
+    }
+
+    setUser(updatedUser);
     }
 
 
