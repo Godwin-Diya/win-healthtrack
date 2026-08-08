@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import HealthRecordForm from "@/components/hrf";
 import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
-
-import type { User } from "@/types/health";
+import type { HealthRecord, User } from "@/types/health";
 
 export default function DashboardPage() {
 
@@ -37,6 +36,10 @@ export default function DashboardPage() {
     function handleDelete(id: string) {
     if (!user) {
     return;
+    }
+        
+    function handleEdit(record: HealthRecord) {
+    console.log("Edit record:", record);
     }
 
     const updatedHealthRecords =
