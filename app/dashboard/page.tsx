@@ -6,6 +6,7 @@ import HealthRecordForm from "@/components/hrf";
 import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
 import type { HealthRecord, User } from "@/types/health";
+import EditHealthRecordForm from "@/components/EditHRF";
 
 export default function DashboardPage() {
 
@@ -15,6 +16,9 @@ export default function DashboardPage() {
 
     return savedUser ? JSON.parse(savedUser) : null;
     });
+    
+    const [editingRecord, setEditingRecord] =
+    useState<HealthRecord | null>(null);
 
     //2. Router 
     const router = useRouter();
@@ -36,10 +40,6 @@ export default function DashboardPage() {
     function handleDelete(id: string) {
     if (!user) {
     return;
-    }
-        
-    function handleEdit(record: HealthRecord) {
-    console.log("Edit record:", record);
     }
 
     const updatedHealthRecords =
@@ -64,19 +64,19 @@ export default function DashboardPage() {
         if (existingUser.email === user.email) {
         return updatedUser;
     }
-
     return existingUser;
     });
-
     localStorage.setItem(
         "users",
         JSON.stringify(updatedUsers)
     );
     }
-
     setUser(updatedUser);
     }
 
+    function handleEdit(record: HealthRecord) {
+    setEditingRecord(record);
+    }
 
     //5. Protection
     if (!user) {
@@ -119,9 +119,60 @@ export default function DashboardPage() {
 
             <RecentHealthChecks
             healthRecords={user.healthRecords ?? []}
-            onDelete={handleDelete}            
+            onDelete={handleDelete}
+            onEdit={handleEdit}            
             />
-                    
+
+            {editingRecord && (
+            <EditHealthRecordForm
+            record={editingRecord}
+            onSave={(updatedRecord) => {
+            if (!user) {
+            return;
+            }
+
+    const updatedHealthRecords =
+    user.healthRecords?.map((record) =>
+        record.id === updatedRecord.id
+        ? updatedRecord
+        : record
+    ) ?? [];
+
+    const updatedUser = {
+    ...user,
+    healthRecords: updatedHealthRecords,
+    };
+
+    localStorage.setItem(
+    "currentUser",
+    JSON.stringify(updatedUser)
+    );
+
+        const savedUsers = localStorage.getItem("users");
+        if (savedUsers) {
+        const users: User[] = JSON.parse(savedUsers);
+
+        const updatedUsers = users.map((existingUser) => {
+        if (existingUser.email === user.email) {
+        return updatedUser;
+        }
+
+        return existingUser;
+        });
+
+        localStorage.setItem(
+        "users",
+        JSON.stringify(updatedUsers)
+        );
+        }
+
+        setUser(updatedUser);
+        setEditingRecord(null);
+        }}
+            onCancel={() => setEditingRecord(null)}
+            />
+        )}
+
             <p className="mt-3 text-gray-600">
             No health records yet.
             </p>
