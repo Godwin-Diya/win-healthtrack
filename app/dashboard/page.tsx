@@ -173,9 +173,6 @@ export default function DashboardPage() {
             />
         )}
 
-            <p className="mt-3 text-gray-600">
-            No health records yet.
-            </p>
 
             <HealthRecordForm />
                     

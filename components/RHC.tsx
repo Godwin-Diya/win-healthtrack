@@ -23,14 +23,20 @@ export default function RecentHealthChecks({
 
         {healthRecords.length > 0 ? (
         <div className="mt-4 space-y-4">
-            {healthRecords.map((record, index) => (
+            {healthRecords.length === 0 ? (
+            <p className="mt-3 text-gray-600">
+            No health records yet.
+            </p>
+            ) : (
+            healthRecords.map((record) => (
             <HealthRecordCard
-        key={index}
-        record={record}
-        onDelete={onDelete}  
-        onEdit={onEdit}            
-        />
-        ))}
+            key={record.id}
+            record={record}
+            onDelete={onDelete}
+            onEdit={onEdit}
+            />
+            ))
+            )}
         </div>
         ) : (
             <p className="mt-3 text-gray-600">
