@@ -15,34 +15,34 @@ export default function RecentHealthChecks({
     onDelete,
     onEdit,
 }: RecentHealthChecksProps) {
-    return (
-    <div className="mt-8 rounded-xl border p-6">
-        <h2 className="text-xl font-semibold">
-        Recent Health Checks
-        </h2>
 
-        {healthRecords.length > 0 ? (
-        <div className="mt-4 space-y-4">
-            {healthRecords.length === 0 ? (
-            <p className="mt-3 text-gray-600">
-            No health records yet.
-            </p>
-            ) : (
-            healthRecords.map((record) => (
+    return (
+    <section className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
+    <div className="mb-6">
+        <h2 className="text-2xl font-bold">
+        Recent Health Checks</h2>
+
+        <p className="mt-1 text-sm text-gray-600">
+        View and manage your recent health records.
+        </p>
+        </div>
+
+        {healthRecords.length === 0 ? (
+        <p className="text-gray-600">
+        No health records yet.
+        </p>
+        ) : (
+        <div className="space-y-4">
+        {healthRecords.map((record) => (
             <HealthRecordCard
             key={record.id}
             record={record}
             onDelete={onDelete}
             onEdit={onEdit}
-            />
-            ))
-            )}
-        </div>
-        ) : (
-            <p className="mt-3 text-gray-600">
-            No health records yet.
-            </p>
-    )}
+        />
+    ))}
     </div>
+    )}
+    </section>
 );
 }

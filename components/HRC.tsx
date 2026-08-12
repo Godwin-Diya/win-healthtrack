@@ -1,4 +1,5 @@
 import type { HealthRecord } from "@/types/health";
+import { getGlucoseStatus } from "@/utils/glucoseStatus";
 
 type HealthRecordCardProps = {
     record: HealthRecord;
@@ -11,21 +12,30 @@ export default function HealthRecordCard({
     onDelete,
     onEdit,
 }: HealthRecordCardProps) {
+    const glucoseStatus = getGlucoseStatus(
+    record.glucose,
+    record.fasting
+);
     return (
-    <div className="rounded-lg border p-4">
-        <p>
+    <div className="rounded-xl, border bg-white p-5 shadow-sm">
+        <p className="text-lg">
         <strong>Blood Glucose:</strong>{" "}
         {record.glucose} mg/dL
         </p>
 
-        <p>
+        <p className="mt-2">
         <strong>Fasting:</strong>{" "}
-        {record.fasting}
+        {record.fasting === "yes" ? "Yes" : "No"}
         </p>
 
         <p>
         <strong>Date:</strong>{" "}
         {record.date}
+        </p>
+            
+        <p className="mt-2">
+        <strong>Status:</strong>{" "}
+        {glucoseStatus}
         </p>
             
         <div className="mt-4 flex gap-3">
