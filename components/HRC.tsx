@@ -33,10 +33,13 @@ export default function HealthRecordCard({
         {record.date}
         </p>
             
-        <p className="mt-2">
-        <strong>Status:</strong>{" "}
+        <div className="mt-3">
+        <strong>Status:</strong>
+
+        <span className="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold">
         {glucoseStatus}
-        </p>
+        </span>
+        </div>
             
         <div className="mt-4 flex gap-3">
         <button
