@@ -17,7 +17,7 @@ export default function HealthRecordForm() {
             id: crypto.randomUUID(),
             glucose,
             fasting,
-            date: new Date().toLocaleString(), 
+            date: new Date().toISOString(), 
         };
 
         const savedUser = localStorage.getItem("currentUser");

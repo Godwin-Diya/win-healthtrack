@@ -7,6 +7,7 @@ import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
 import type { HealthRecord, User } from "@/types/health";
 import EditHealthRecordForm from "@/components/EditHRF";
+import GlucoseChart from "@/components/GlucoseChart";
 
 export default function DashboardPage() {
 
@@ -121,6 +122,10 @@ export default function DashboardPage() {
             healthRecords={user.healthRecords ?? []}
             onDelete={handleDelete}
             onEdit={handleEdit}            
+            />
+
+            <GlucoseChart
+            healthRecords={user.healthRecords ?? []}
             />
 
             {editingRecord && (

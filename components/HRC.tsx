@@ -15,7 +15,13 @@ export default function HealthRecordCard({
     const glucoseStatus = getGlucoseStatus(
     record.glucose,
     record.fasting
-);
+    );
+    
+    const statusClass =
+    glucoseStatus === "Normal"
+    ? "bg-gray-100"
+    : "bg-gray-200";
+    
     return (
     <div className="rounded-xl, border bg-white p-5 shadow-sm">
         <p className="text-lg">
@@ -36,7 +42,7 @@ export default function HealthRecordCard({
         <div className="mt-3">
         <strong>Status:</strong>
 
-        <span className="ml-2 inline-block rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold">
+        <span className={`ml-2 inline-block rounded-full px-3 py-1 text-sm font-semibold ${statusClass}`}>
         {glucoseStatus}
         </span>
         </div>
