@@ -53,11 +53,32 @@ export default function BMIPage() {
     currentUser.healthRecords.push(newRecord);
 
     localStorage.setItem(
-        "currentUser",
-        JSON.stringify(currentUser)
+    "currentUser",
+    JSON.stringify(currentUser)
     );
 
-    setMessage(`Your BMI is ${bmi.toFixed(1)}.`);
+    const savedUsers = localStorage.getItem("users");
+
+    if (savedUsers) {
+    const users = JSON.parse(savedUsers);
+
+    const updatedUsers = users.map((existingUser: {
+    email: string;
+    }) => {
+    if (existingUser.email === currentUser.email) {
+        return currentUser;
+    }
+
+    return existingUser;
+    });
+
+    localStorage.setItem(
+    "users",
+    JSON.stringify(updatedUsers)
+    );
+    }
+
+setMessage(`Your BMI is ${bmi.toFixed(1)}.`);
     setWeight("");
     setHeight("");
     }
@@ -129,8 +150,10 @@ export default function BMIPage() {
                 {message}
             </p>
             )}
-
-        </div>
+        
+        
+                
+                </div>
         </div>
     </main>);
 }

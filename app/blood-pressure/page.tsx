@@ -41,13 +41,34 @@ export default function BloodPressurePage() {
     currentUser.healthRecords.push(newRecord);
 
     localStorage.setItem(
-        "currentUser",
-        JSON.stringify(currentUser)
+    "currentUser",
+    JSON.stringify(currentUser)
     );
 
-    setSystolic("");
-    setDiastolic("");
-    setMessage("Blood pressure reading saved successfully.");
+    const savedUsers = localStorage.getItem("users");
+
+    if (savedUsers) {
+    const users = JSON.parse(savedUsers);
+
+    const updatedUsers = users.map((existingUser: {
+    email: string;
+        }) => {
+        if (existingUser.email === currentUser.email) {
+        return currentUser;
+        }
+
+    return existingUser;
+    });
+
+    localStorage.setItem(
+    "users",
+    JSON.stringify(updatedUsers)
+    );
+    }
+
+setSystolic("");
+setDiastolic("");
+setMessage("Blood pressure reading saved successfully.");
     } 
 
     return (
