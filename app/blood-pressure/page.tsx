@@ -10,6 +10,30 @@ export default function BloodPressurePage() {
     const [diastolic, setDiastolic] = useState("");
     const [message, setMessage] = useState("");
 
+
+    function getBloodPressureStatus(
+    systolic: number,
+    diastolic: number
+    ) {
+    if (systolic < 90 || diastolic < 60) {
+        return "Low blood pressure.";
+    }
+
+    if (systolic < 120 && diastolic < 80) {
+        return "Your blood pressure is in the normal range.";
+    }
+
+    if (systolic < 130 && diastolic < 80) {
+        return "Your blood pressure is slightly elevated.";
+    }
+
+    if (systolic < 140 || diastolic < 90) {
+        return "Your blood pressure is in the high range.";
+    }
+
+        return "Your blood pressure is very high. Consider discussing this reading with a healthcare professional.";
+    }
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -18,6 +42,13 @@ export default function BloodPressurePage() {
         return;
     }
 
+    
+    const systolicValue = Number(systolic);
+    const diastolicValue = Number(diastolic);
+    const status = getBloodPressureStatus(
+    systolicValue,
+    diastolicValue
+    );    
     const savedUser = localStorage.getItem("currentUser");
 
     if (!savedUser) {
@@ -66,9 +97,9 @@ export default function BloodPressurePage() {
     );
     }
 
-setSystolic("");
-setDiastolic("");
-setMessage("Blood pressure reading saved successfully.");
+    setSystolic("");
+    setDiastolic("");
+    setMessage(`Reading saved. ${status}`);
     } 
 
     return (

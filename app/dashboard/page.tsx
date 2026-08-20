@@ -99,6 +99,14 @@ export default function DashboardPage() {
             This is your personal health dashboard.
             </p>
 
+            <div className="mt-6">
+            <button
+            onClick={() => router.push("/health-check")}
+            className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 transition">
+            🩺 Quick Health Check
+            </button>
+            </div>        
+
             <div className="mt-8 grid gap-6 md:grid-cols-2">
 
             <DashboardSummary
