@@ -10,6 +10,8 @@ export default function BMIPage() {
     const [height, setHeight] = useState("");
     const [message, setMessage] = useState("");
 
+
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -78,7 +80,7 @@ export default function BMIPage() {
     );
     }
 
-setMessage(`Your BMI is ${bmi.toFixed(1)}.`);
+
     setWeight("");
     setHeight("");
     }
