@@ -10,7 +10,21 @@ export default function BMIPage() {
     const [height, setHeight] = useState("");
     const [message, setMessage] = useState("");
 
+    function getBMIStatus(bmi: number) {
+  if (bmi < 18.5) {
+    return "This is below the usual healthy BMI range.";
+  }
 
+  if (bmi < 25) {
+    return "This is within the usual healthy BMI range.";
+  }
+
+  if (bmi < 30) {
+    return "This is above the usual healthy BMI range.";
+  }
+
+  return "This is in the obesity range.";
+}
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -80,7 +94,9 @@ export default function BMIPage() {
     );
     }
 
+    const status = getBMIStatus(bmi);
 
+    setMessage(`Your BMI is ${bmi.toFixed(1)}. ${status}`);
     setWeight("");
     setHeight("");
     }

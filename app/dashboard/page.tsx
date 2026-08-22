@@ -118,9 +118,37 @@ export default function DashboardPage() {
             🩸 Blood Pressure
             </h2>
 
-            <p className="mt-3 text-gray-600">
-            Record and monitor your blood pressure.
+            {(() => {
+            const bloodPressureRecords =
+            (user.healthRecords ?? []).filter(
+            (record) =>
+            record.systolic && record.diastolic
+            );
+
+            const latest =
+            bloodPressureRecords[
+            bloodPressureRecords.length - 1
+            ];
+
+            return latest ? (
+            <>
+            <p className="mt-4 text-3xl font-bold">
+            {latest.systolic}/{latest.diastolic}
+            <span className="ml-1 text-sm font-normal text-gray-500">
+            mmHg
+            </span>
             </p>
+
+            <p className="mt-2 text-sm text-gray-600">
+            Latest reading
+            </p>
+            </>
+            ) : (
+            <p className="mt-3 text-gray-600">
+            No blood pressure reading yet.
+            </p>
+            );
+            })()}
 
             <button
             onClick={() => router.push("/blood-pressure")}
@@ -134,18 +162,38 @@ export default function DashboardPage() {
             ⚖️ Body Mass Index
             </h2>
 
-            <p className="mt-3 text-gray-600">
-            Calculate and monitor your Body Mass Index.
+            {(() => {
+            const bmiRecords =
+            (user.healthRecords ?? []).filter(
+            (record) => record.bmi
+            );
+
+            const latest =
+            bmiRecords[bmiRecords.length - 1];
+
+            return latest ? (
+            <>
+            <p className="mt-4 text-3xl font-bold">
+            {latest.bmi}
             </p>
+
+            <p className="mt-2 text-sm text-gray-600">
+            Latest BMI reading
+            </p>
+            </>
+            ) : (
+            <p className="mt-3 text-gray-600">
+            No BMI reading yet.
+            </p>
+            );
+            })()}
 
             <button
             onClick={() => router.push("/bmi")}
-            className="mt-4 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
-            >
+            className="mt-4 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700">
             Calculate BMI
             </button>
             </div>
-
             </div>
 
             <RecentHealthChecks
