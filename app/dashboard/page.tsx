@@ -109,9 +109,55 @@ export default function DashboardPage() {
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
 
-            <DashboardSummary
-            healthRecords={user.healthRecords ?? []}
-            />
+            <div className="rounded-xl border p-6">
+  <h2 className="text-xl font-semibold">
+    🩺 Blood Glucose
+  </h2>
+
+  {(() => {
+    const glucoseRecords =
+      (user.healthRecords ?? []).filter(
+        (record) => record.glucose
+      );
+
+    const latest =
+      glucoseRecords[glucoseRecords.length - 1];
+
+    return latest ? (
+      <>
+        <p className="mt-4 text-3xl font-bold">
+          {latest.glucose}
+          <span className="ml-1 text-sm font-normal text-gray-500">
+            mg/dL
+          </span>
+        </p>
+
+        <p className="mt-2 text-sm text-gray-600">
+          Latest glucose reading
+        </p>
+      </>
+    ) : (
+      <p className="mt-3 text-gray-600">
+        No glucose reading yet.
+      </p>
+    );
+  })()}
+
+  <button
+    onClick={() => {
+      const form = document.getElementById("glucose-form");
+
+      if (form) {
+        form.scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+    }}
+    className="mt-4 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+  >
+    Check Blood Glucose
+  </button>
+</div>
 
             <div className="rounded-xl border p-6">
             <h2 className="text-xl font-semibold">
