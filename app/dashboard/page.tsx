@@ -242,11 +242,23 @@ export default function DashboardPage() {
             </div>
             </div>
 
-            <RecentHealthChecks
-            healthRecords={user.healthRecords ?? []}
-            onDelete={handleDelete}
-            onEdit={handleEdit}            
-            />
+          <div className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
+  <h2 className="text-2xl font-bold">
+    Saved Blood Glucose Records
+  </h2>
+
+  <p className="mt-2 text-sm text-gray-600">
+    View, edit, or delete your previous blood glucose readings.
+  </p>
+
+  <div className="mt-6">
+    <RecentHealthChecks
+      healthRecords={user.healthRecords ?? []}
+      onDelete={handleDelete}
+      onEdit={handleEdit}
+    />
+  </div>
+</div>
 
             <GlucoseChart
             healthRecords={user.healthRecords ?? []}
@@ -372,7 +384,9 @@ export default function DashboardPage() {
             />
         )}
 
+            <div id="glucose-form">
             <HealthRecordForm />
+            </div>
                     
             <button
             onClick={handleLogout}
