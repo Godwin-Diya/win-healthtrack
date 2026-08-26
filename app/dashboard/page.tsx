@@ -125,17 +125,22 @@ export default function DashboardPage() {
 
     return latest ? (
       <>
-        <p className="mt-4 text-3xl font-bold">
-          {latest.glucose}
-          <span className="ml-1 text-sm font-normal text-gray-500">
-            mg/dL
-          </span>
-        </p>
+      <p className="mt-4 text-3xl font-bold">
+      {latest.glucose}
+      <span className="ml-1 text-sm font-normal text-gray-500">
+      mg/dL
+      </span>
+      </p>
 
-        <p className="mt-2 text-sm text-gray-600">
-          Latest glucose reading
-        </p>
-      </>
+      <p className="mt-2 text-sm text-gray-600">
+      Latest glucose reading
+      </p>
+
+      <p className="mt-2 text-sm font-semibold text-blue-600">
+      {latest.result}
+      </p>
+
+        </>
     ) : (
       <p className="mt-3 text-gray-600">
         No glucose reading yet.

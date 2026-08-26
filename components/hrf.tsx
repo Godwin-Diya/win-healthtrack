@@ -10,16 +10,56 @@ export default function HealthRecordForm() {
     const router = useRouter();
     const [message, setMessage] = useState("");
 
+
+    function getGlucoseStatus(glucoseValue: number, isFasting: string) {
+  if (isFasting === "yes") {
+    if (glucoseValue < 70) {
+      return "Low fasting blood glucose.";
+    }
+
+    if (glucoseValue <= 99) {
+      return "Within the usual fasting range.";
+    }
+
+    if (glucoseValue <= 125) {
+      return "Above the usual fasting range.";
+    }
+
+    return "High fasting blood glucose.";
+  }
+
+  if (glucoseValue < 70) {
+    return "Low blood glucose.";
+  }
+
+  if (glucoseValue < 140) {
+    return "Within the usual range for a non-fasting reading.";
+  }
+
+  if (glucoseValue < 200) {
+    return "Above the usual range for a non-fasting reading.";
+  }
+
+  return "High blood glucose.";
+}
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        const newRecord: HealthRecord = {
-            id: crypto.randomUUID(),
-            glucose,
-            fasting,
-            date: new Date().toISOString(), 
-        };
+        const glucoseValue = Number(glucose);
 
+const result = getGlucoseStatus(
+  glucoseValue,
+  fasting
+);
+
+const newRecord: HealthRecord = {
+  id: crypto.randomUUID(),
+  glucose,
+  fasting,
+  date: new Date().toISOString(),
+  result,
+};
         const savedUser = localStorage.getItem("currentUser");
 
             if(!savedUser) {
@@ -73,6 +113,7 @@ export default function HealthRecordForm() {
                     <input
                         type="number"
                         value={glucose}
+                        required
                         onChange={(e) => setGlucose(e.target.value)}
                         className="w-full rounded-lg border p-3"
                         placeholder="Enter blood glucose"
