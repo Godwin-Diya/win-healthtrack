@@ -102,8 +102,12 @@ const newRecord: HealthRecord = {
                 className="mt-8 rounded-xl border bg-white p-6 shadow-sm"
             >
                 <h2 className="text-2xl font-bold">
-                    Add Health Record
+                🩺 Check Blood Glucose
                 </h2>
+
+                <p className="mt-2 text-gray-600">
+                    Enter your blood glucose reading to save it and receive a quick interpretation.
+                </p>
 
                 <div className="mt-6">
                     <label className="mb-2 block font-medium">
