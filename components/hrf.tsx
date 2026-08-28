@@ -143,7 +143,7 @@ const newRecord: HealthRecord = {
                     type="submit"
                     className="mt-6 rounded-lg bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition"
                 >
-                    Save Record
+                    Save Glucose Reading
                 </button>
 
                 {message && (
