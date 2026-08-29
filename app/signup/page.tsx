@@ -1,11 +1,6 @@
 "use client";
 import { useState } from "react";    
-
-type User = {
-    fullName: string;
-    email: string;
-    password: string;
-};
+import type { User } from "@/types/health";
 
 export default function SignUpPage()
 {
@@ -58,9 +53,10 @@ export default function SignUpPage()
 
         setError("");
         const newUser: User = {
-            fullName,
-            email,
+            fullName: fullName.trim(),
+            email: email.trim().toLowerCase(),
             password,
+            healthRecords: [],
         };
     
         const existingUsers = localStorage.getItem("users");

@@ -1,11 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation"
 import { useState } from "react";
-type User = {
-    email: string;
-    password: string;
-};
-
+import type { User } from "@/types/health"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");

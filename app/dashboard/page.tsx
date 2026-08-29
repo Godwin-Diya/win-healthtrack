@@ -107,7 +107,7 @@ export default function DashboardPage() {
             </button>
             </div>        
 
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
 
             <div className="rounded-xl border p-6">
   <h2 className="text-xl font-semibold">
@@ -246,6 +246,8 @@ export default function DashboardPage() {
             </button>
             </div>
             </div>
+
+            <HealthRecordForm />
 
           <div className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
   <h2 className="text-2xl font-bold">
@@ -390,7 +392,6 @@ export default function DashboardPage() {
         )}
 
             <div id="glucose-form">
-            <HealthRecordForm />
             </div>
                     
             <button
