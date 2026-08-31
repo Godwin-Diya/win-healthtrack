@@ -12,53 +12,59 @@ export default function HealthRecordForm() {
 
 
     function getGlucoseStatus(glucoseValue: number, isFasting: string) {
-  if (isFasting === "yes") {
+    if (isFasting === "yes") {
     if (glucoseValue < 70) {
-      return "Low fasting blood glucose.";
+        return "Low fasting blood glucose.";
     }
 
     if (glucoseValue <= 99) {
-      return "Within the usual fasting range.";
+        return "Within the usual fasting range.";
     }
 
     if (glucoseValue <= 125) {
-      return "Above the usual fasting range.";
+        return "Above the usual fasting range.";
     }
 
     return "High fasting blood glucose.";
-  }
+    }
 
-  if (glucoseValue < 70) {
+    if (glucoseValue < 70) {
     return "Low blood glucose.";
-  }
+    }
 
-  if (glucoseValue < 140) {
+    if (glucoseValue < 140) {
     return "Within the usual range for a non-fasting reading.";
-  }
+    }
 
-  if (glucoseValue < 200) {
+    if (glucoseValue < 200) {
     return "Above the usual range for a non-fasting reading.";
-  }
+    }
 
-  return "High blood glucose.";
+    return "High blood glucose.";
 }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
-        const glucoseValue = Number(glucose);
+
+const glucoseValue = Number(glucose);
+    if (!glucose || glucoseValue <= 0) {
+    setMessage("Please enter a valid blood glucose reading.");
+    return;
+}   
+
 
 const result = getGlucoseStatus(
-  glucoseValue,
-  fasting
+    glucoseValue,
+    fasting
 );
 
 const newRecord: HealthRecord = {
-  id: crypto.randomUUID(),
-  glucose,
-  fasting,
-  date: new Date().toISOString(),
-  result,
+    id: crypto.randomUUID(),
+    glucose,
+    fasting,
+    date: new Date().toISOString(),
+    result,
 };
         const savedUser = localStorage.getItem("currentUser");
 
@@ -78,8 +84,8 @@ const newRecord: HealthRecord = {
         const savedUsers = localStorage.getItem("users");
         if (!savedUsers) {
         setMessage("Health record saved successfully!");
-    return;
-    }
+        return;
+        }
 
         const users: User[] = JSON.parse(savedUsers);
         const updatedUsers = users.map((user) => {
@@ -90,10 +96,12 @@ const newRecord: HealthRecord = {
     return user;
         });
         localStorage.setItem("users", JSON.stringify(updatedUsers));
-        router.refresh();
+        
+        setMessage("Health record saved successfully!");
         
         setGlucose("");
         setFasting("yes");
+        router.refresh();
     }
 
         return (

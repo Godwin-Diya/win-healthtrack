@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HealthRecordForm from "@/components/hrf";
-import DashboardSummary from "@/components/DS";
 import RecentHealthChecks from "@/components/RHC";
 import type { HealthRecord, User } from "@/types/health";
 import EditHealthRecordForm from "@/components/EditHRF";
@@ -92,7 +91,7 @@ export default function DashboardPage() {
         <div className="rounded-xl bg-white p-8 shadow-md">
             <h1 className="text-4xl font-bold">
             Welcome back
-            {user ? `, ${user.fullName}` : ""}! 👋
+            {user.fullName}! 👋
             </h1>
 
             <p className="mt-3 text-gray-600">
@@ -247,7 +246,9 @@ export default function DashboardPage() {
             </div>
             </div>
 
-            <HealthRecordForm />
+            <div id="glucose-form">
+              <HealthRecordForm />
+            </div>
 
           <div className="mt-8 rounded-xl border bg-white p-6 shadow-sm">
   <h2 className="text-2xl font-bold">
@@ -391,9 +392,6 @@ export default function DashboardPage() {
             />
         )}
 
-            <div id="glucose-form">
-            </div>
-                    
             <button
             onClick={handleLogout}
             className="mt-8 rounded-lg bg-red-600 px-6 py-3 font-semibold text-white hover:bg-red-700 transition"
