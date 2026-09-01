@@ -1,5 +1,4 @@
 import type { HealthRecord } from "@/types/health";
-import { getGlucoseStatus } from "@/utils/glucoseStatus";
 
 type HealthRecordCardProps = {
     record: HealthRecord;
@@ -12,10 +11,7 @@ export default function HealthRecordCard({
     onDelete,
     onEdit,
 }: HealthRecordCardProps) {
-    const glucoseStatus = getGlucoseStatus(
-    record.glucose,
-    record.fasting
-    );
+    const glucoseStatus = record.result ?? "Unknown";
     
     const statusClass =
     glucoseStatus === "Normal"
@@ -23,7 +19,7 @@ export default function HealthRecordCard({
     : "bg-gray-200";
     
     return (
-    <div className="rounded-xl, border bg-white p-5 shadow-sm">
+    <div className="rounded-xl border bg-white p-5 shadow-sm">
         <p className="text-lg">
         <strong>Blood Glucose:</strong>{" "}
         {record.glucose} mg/dL
