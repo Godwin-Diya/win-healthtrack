@@ -41,7 +41,7 @@ export default function DashboardSummary({
 
         <p className="mt-2">
         <strong>Fasting:</strong>{" "}
-        {latestRecord.fasting}
+        {latestRecord.fasting === "yes" ? "Yes" : "No"}
         </p>
     </div>
 );

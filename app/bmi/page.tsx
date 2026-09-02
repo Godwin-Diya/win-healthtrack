@@ -11,20 +11,20 @@ export default function BMIPage() {
     const [message, setMessage] = useState("");
 
     function getBMIStatus(bmi: number) {
-  if (bmi < 18.5) {
+    if (bmi < 18.5) {
     return "This is below the usual healthy BMI range.";
-  }
+    }
 
-  if (bmi < 25) {
+    if (bmi < 25) {
     return "This is within the usual healthy BMI range.";
-  }
+    }
 
-  if (bmi < 30) {
+    if (bmi < 30) {
     return "This is above the usual healthy BMI range.";
-  }
+    }
 
-  return "This is in the obesity range.";
-}
+    return "This is in the obesity range.";
+    }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -53,7 +53,8 @@ export default function BMIPage() {
     }
 
     const currentUser = JSON.parse(savedUser);
-
+    
+    const status = getBMIStatus(bmi);
     const newRecord = {
         id: crypto.randomUUID(),
         weight,
@@ -94,8 +95,6 @@ export default function BMIPage() {
     );
     }
 
-    const status = getBMIStatus(bmi);
-
     setMessage(`Your BMI is ${bmi.toFixed(1)}. ${status}`);
     setWeight("");
     setHeight("");
@@ -134,6 +133,7 @@ export default function BMIPage() {
                 type="number"
                 step="0.1"
                 value={weight}
+                required
                 onChange={(e) => setWeight(e.target.value)}
                 className="w-full rounded-lg border p-3"
                 placeholder="e.g. 70"
@@ -149,6 +149,7 @@ export default function BMIPage() {
                 type="number"
                 step="0.1"
                 value={height}
+                required
                 onChange={(e) => setHeight(e.target.value)}
                 className="w-full rounded-lg border p-3"
                 placeholder="e.g. 175"
@@ -175,3 +176,5 @@ export default function BMIPage() {
         </div>
     </main>);
 }
+
+

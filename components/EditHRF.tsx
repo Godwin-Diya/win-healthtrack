@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { HealthRecord } from "@/types/health";
+import { getGlucoseStatus } from "@/utils/glucoseStatus";
+
 
 type EditHealthRecordFormProps = {
     record: HealthRecord;
@@ -16,7 +18,6 @@ export default function EditHealthRecordForm({
 }: EditHealthRecordFormProps) {
     const [glucose, setGlucose] = useState(record.glucose);
     const [fasting, setFasting] = useState(record.fasting);
-
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -24,6 +25,7 @@ export default function EditHealthRecordForm({
         ...record,
         glucose,
         fasting,
+        result: getGlucoseStatus(glucose, fasting),
     };
 
     onSave(updatedRecord);
@@ -46,6 +48,7 @@ export default function EditHealthRecordForm({
         <input
             type="number"
             value={glucose}
+            required
             onChange={(e) => setGlucose(e.target.value)}
             className="w-full rounded-lg border p-3"
         />
