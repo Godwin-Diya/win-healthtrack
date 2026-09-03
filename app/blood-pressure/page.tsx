@@ -62,6 +62,7 @@ export default function BloodPressurePage() {
         id: crypto.randomUUID(),
         systolic,
         diastolic,
+        bloodPressureResult: status, 
         date: new Date().toISOString(),
     };
 
@@ -135,6 +136,7 @@ export default function BloodPressurePage() {
                 <input
                 type="number"
                 value={systolic}
+                required
                 onChange={(e) =>
                     setSystolic(e.target.value)
                 }
@@ -151,8 +153,9 @@ export default function BloodPressurePage() {
                 <input
                 type="number"
                 value={diastolic}
+                required
                 onChange={(e) =>
-                    setDiastolic(e.target.value)
+                setDiastolic(e.target.value)
                 }
                 className="w-full rounded-lg border p-3"
                 placeholder="e.g. 80"

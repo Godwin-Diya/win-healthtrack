@@ -60,6 +60,7 @@ export default function BMIPage() {
         weight,
         height,
         bmi: bmi.toFixed(1),
+        bmiResult: status,
         date: new Date().toISOString(),
     };
 

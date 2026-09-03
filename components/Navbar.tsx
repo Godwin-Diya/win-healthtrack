@@ -11,7 +11,7 @@ return (
 
     <div className="flex items-center gap-6">
         <Link
-            href="/dashboard"
+            href="/"
             className="text-gray-700 hover:text-blue-600 transition">
             Home
         </Link>
