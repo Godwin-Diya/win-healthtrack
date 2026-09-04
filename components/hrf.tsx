@@ -48,9 +48,11 @@ export default function HealthRecordForm() {
 
 
 const glucoseValue = Number(glucose);
-    if (!glucose || glucoseValue <= 0) {
-    setMessage("Please enter a valid blood glucose reading.");
-    return;
+        if (!glucose ||
+            Number.isNaN(glucoseValue) ||
+            glucoseValue <= 0) {
+            setMessage("Please enter a valid blood glucose value.");
+            return;
 }   
 
 

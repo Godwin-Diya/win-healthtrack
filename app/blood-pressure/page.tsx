@@ -178,6 +178,6 @@ export default function BloodPressurePage() {
             )}
 
         </div>
-        </div>
+        </div>s
         </main>);
 }
