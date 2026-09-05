@@ -32,7 +32,7 @@ export default function HealthRecordCard({
 
         <p>
         <strong>Date:</strong>{" "}
-        {record.date}
+        {new Date(record.date).toLocaleDateString()}
         </p>
             
         <div className="mt-3">
