@@ -112,7 +112,7 @@ export default function SignUpPage()
                         value={email}  
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email address"
-                        className="w-full rounde-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full rounded-lg border p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
 
