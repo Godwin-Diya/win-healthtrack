@@ -11,11 +11,7 @@ import GlucoseChart from "@/components/GlucoseChart";
 export default function DashboardPage() {
 
     // 1. State
-    const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem("currentUser");
-
-    return savedUser ? JSON.parse(savedUser) : null;
-    });
+  const [user, setUser] = useState<User | null>(null); 
     
     const [editingRecord, setEditingRecord] =
     useState<HealthRecord | null>(null);
@@ -29,7 +25,17 @@ export default function DashboardPage() {
     router.replace("/login");
     }
     }, [user, router]);
+    
+  useEffect(() => {
+    const savedUser = localStorage.getItem("currentUser");
+    if (savedUser) {
+    setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
+  useEffect(() => {
+    if (!user) router.replace("/login");
+  }, [user, router]);
 
     // 4. Functions
     function handleLogout() {
