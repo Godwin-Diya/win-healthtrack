@@ -1,8 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Win HealthTrack 
+Win HealthTrack is a personal health tracking web application designed to help users monitor important health measurements in one place.
+Features
 
-## Getting Started
+🩸 Blood glucose checking and history
+❤️ Blood pressure tracking
+⚖️ BMI calculation and tracking
+📊 Health record history and glucose chart
+🔐 Simple user login and signup
+💾 Local browser storage for health records
+📱 Clean and responsive interface
 
-First, run the development server:
+Tech Stack
+
+Next.js
+React
+TypeScript
+Tailwind CSS
+Recharts
+
+Getting Started
+Install the dependencies:
+npm install
+
+Start the development server:
+npm run dev
+
+Then open the local address shown in the terminal.
+Purpose
+Win HealthTrack was built as a portfolio project to demonstrate frontend development skills while creating a simple, user-friendly health tracking experience.
+
+Note: This is a portfolio/demo application and is not a replacement for professional medical advice.
 
 ```bash
 npm run dev
