@@ -74,8 +74,8 @@ export default function GlucoseChart({
             />
             </LineChart>
                 </ResponsiveContainer>
-                <h1>  fhfjdhdjdjdhdjdjdjk</h1>
-                yutinoyuikolooooooojg
+                <h2>yummy about to yummy</h2>
+                <h3> About to deploy</h3>
         </div>
     </section>
 );
