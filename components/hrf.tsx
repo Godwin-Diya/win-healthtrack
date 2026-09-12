@@ -161,9 +161,6 @@ const newRecord: HealthRecord = {
                         {message}
                     </p>)
                 }
-
-                <h2>yummy about to yummy</h2>
-                <h3> About to deploy</h3>
                 
             </form>
         );
