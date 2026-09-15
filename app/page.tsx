@@ -5,18 +5,18 @@ export default function Home()  {
     <>
     
 
-      <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+      <main className="w-full px-4 py-8 sm:px-6 sm:py-10 lg:px-8 min-h-screen flex flex-col items-center justify-center text-center">
         
-      <h1 className="text-5xl font-bold text-blue-700">
+      <h1 className="text-3xl font-bold sm:text-4xl lg:text-5xl text-blue-700">
           Win HealthTrack
       </h1>
         
 
-        <p className="mt-4 text-xl font-medium text-gray-700">
+        <p className=" mt-3 text-base sm:text-lg lg:text-xl font-medium text-gray-700">
           Your Personal Health Companion
         </p>
 
-        <p className="mt-6 max-w-2xl text-gray-600">
+        <p className=" mt-3 text-base sm:text-lg lg:text-xl max-w-2xl text-gray-600">
           Take control of your health with quick assessments, understand your results and begin your journey toward healthier living.
         </p>
         
@@ -25,13 +25,13 @@ export default function Home()  {
         🩺 Start Quick Health Check
         </Link>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3 max-w-5xl">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-xl border p-6 shadow-sm">
             <h2 className="text-xl font-semibold">
               🩺 Quick Assessment
             </h2>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-base sm:text-lg lg:text-xl text-gray-600">
               Check your blood glucose level instantly with our easy-to-use health checker.
             </p>
           </div>
@@ -41,7 +41,7 @@ export default function Home()  {
               📊 Understand Your Results
             </h2>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-base sm:text-lg lg:text-xl text-gray-600">
               Receive simple explanations and helpful health guidance based on your readings.
             </p>
           </div>
@@ -51,7 +51,7 @@ export default function Home()  {
               🔒 Private & Secure
             </h2>
 
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-base sm:text-lg lg:text-xl text-gray-600">
               Your guest history is stored locally in your browser, helping protect your privacy.
             </p>
           </div>

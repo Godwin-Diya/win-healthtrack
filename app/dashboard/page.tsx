@@ -10,32 +10,22 @@ import GlucoseChart from "@/components/GlucoseChart";
 
 export default function DashboardPage() {
 
-    // 1. State
-  const [user, setUser] = useState<User | null>(null); 
-    
-    const [editingRecord, setEditingRecord] =
-    useState<HealthRecord | null>(null);
+  const router = useRouter();
 
-    //2. Router 
-    const router = useRouter();
-    
-    //3. useEffect
-    useEffect(() => {
-    if (!user) {
-    router.replace("/login");
+  const [user, setUser] = useState<User | null>(() => {
+    if (typeof window === "undefined") {
+        return null;
     }
-    }, [user, router]);
-    
-  useEffect(() => {
-    const savedUser = localStorage.getItem("currentUser");
-    if (savedUser) {
-    setUser(JSON.parse(savedUser));
-    }
-  }, []);
 
-  useEffect(() => {
+    const savedUser = window.localStorage.getItem("currentUser");
+    return savedUser ? JSON.parse(savedUser) : null;
+});
+
+const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null);
+
+useEffect(() => {
     if (!user) router.replace("/login");
-  }, [user, router]);
+}, [user, router]);
 
     // 4. Functions
     function handleLogout() {

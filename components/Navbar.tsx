@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export default function Navbar() {
 return (
-    <nav className="flex items-center justify-between border-b bg-white px-8 py-4">
+    <nav className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 border-b bg-white">
         <Link
         href="/"
         className="text-2xl font-bold text-blue-700">
         🩺 Win HealthTrack
         </Link>
 
-    <div className="flex items-center gap-6">
+    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
         <Link
             href="/"
             className="text-gray-700 hover:text-blue-600 transition">

@@ -76,7 +76,7 @@ export default function SignUpPage()
     }
 
     return (
-        <main className="min-h-screen flex items-center justify-center px-6">
+        <main className="flex min-h-screen w-full items-start justify-center px-4 py-10 sm:px-6 lg:items-center lg:px-8">
             <div className="w-full max-w-md rounded-xl border p-8 shadow-md">
 
                 <h1 className="text-3xl font-bold text-center">
@@ -160,7 +160,7 @@ export default function SignUpPage()
 
                 <button
                     onClick={handleSignup}
-                    className="mt-6 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 transition"
+                    className="mt-6 w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 transition"
                 >
                     Create Account
                 </button>

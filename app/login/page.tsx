@@ -32,9 +32,9 @@ export default function LoginPage() {
     }
     
 return (
-    <main className="min-h-screen bg-gray-50 p-6">
+    <main className="flex min-h-screen w-full items-start justify-center px-4 py-10 sm:px-6 lg:items-center lg:px-8 bg-gray-50 p-6">
     <div className="mx-auto flex min-h-screen max-w-md items-center">
-        <div className="w-full rounded-xl bg-white p-8 shadow-md">
+        <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md">
 
         <h1 className="text-3xl font-bold">
             Log In
@@ -99,7 +99,7 @@ return (
 
             <button
             type="submit"
-            className="mt-6 w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 transition">
+            className="mt-6 w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 transition">
             Log In
             </button>
         </form>
