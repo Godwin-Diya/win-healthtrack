@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
+
 import type { HealthRecord, User } from "@/types/health";
-    
+
 export default function HealthRecordForm() {
-    const [glucose, setGlucose] = useState("");
-    const [fasting, setFasting] = useState("yes");
-    const router = useRouter();
-    const [message, setMessage] = useState("");
+const [glucose, setGlucose] = useState("");
 
+const [fasting, setFasting] = useState("yes");
 
-    function getGlucoseStatus(glucoseValue: number, isFasting: string) {
+const router = useRouter();
+
+const [message, setMessage] = useState("");
+
+function getGlucoseStatus(
+    glucoseValue: number,
+    isFasting: string
+) {
     if (isFasting === "yes") {
     if (glucoseValue < 70) {
         return "Low fasting blood glucose.";
@@ -43,125 +50,156 @@ export default function HealthRecordForm() {
     return "High blood glucose.";
 }
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
+function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+) {
+    e.preventDefault();
 
+    const glucoseValue = Number(glucose);
 
-const glucoseValue = Number(glucose);
-        if (!glucose ||
-            Number.isNaN(glucoseValue) ||
-            glucoseValue <= 0) {
-            setMessage("Please enter a valid blood glucose value.");
-            return;
-}   
+    if (
+    !glucose ||
+    Number.isNaN(glucoseValue) ||
+    glucoseValue <= 0
+    ) {
+    setMessage(
+        "Please enter a valid blood glucose value."
+    );
+    return;
+    }
 
-
-const result = getGlucoseStatus(
+    const result = getGlucoseStatus(
     glucoseValue,
     fasting
-);
+    );
 
-const newRecord: HealthRecord = {
+    const newRecord: HealthRecord = {
     id: crypto.randomUUID(),
     glucose,
     fasting,
     date: new Date().toISOString(),
     result,
-};
-        const savedUser = localStorage.getItem("currentUser");
+    };
 
-            if(!savedUser) {
-                return;
-            }
+    const savedUser =
+    localStorage.getItem("currentUser");
 
-        const currentUser: User = JSON.parse(savedUser);
+    if (!savedUser) {
+    return;
+    }
 
-        if (!currentUser.healthRecords) {
+    const currentUser: User =
+    JSON.parse(savedUser);
+
+    if (!currentUser.healthRecords) {
     currentUser.healthRecords = [];
-}
+    }
 
-        currentUser.healthRecords.push(newRecord);
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    currentUser.healthRecords.push(newRecord);
 
-        const savedUsers = localStorage.getItem("users");
-        if (!savedUsers) {
-        setMessage("Health record saved successfully!");
-        return;
-        }
+    localStorage.setItem(
+    "currentUser",
+    JSON.stringify(currentUser)
+    );
 
-        const users: User[] = JSON.parse(savedUsers);
-        const updatedUsers = users.map((user) => {
+    const savedUsers =
+    localStorage.getItem("users");
+
+    if (!savedUsers) {
+    setMessage(
+        "Health record saved successfully!"
+    );
+    return;
+    }
+
+    const users: User[] =
+    JSON.parse(savedUsers);
+
+    const updatedUsers = users.map((user) => {
     if (user.email === currentUser.email) {
-    return currentUser;
+        return currentUser;
     }
 
     return user;
-        });
-        localStorage.setItem("users", JSON.stringify(updatedUsers));
-        
-        setMessage("Health record saved successfully!");
-        
-        setGlucose("");
-        setFasting("yes");
-        router.refresh();
-    }
+    });
 
-        return (
-            <form
-                onSubmit={handleSubmit}
-                className="mt-8 rounded-xl border bg-white p-6 shadow-sm"
-            >
-                <h2 className="text-2xl font-bold">
-                🩺 Check Blood Glucose
-                </h2>
+    localStorage.setItem(
+    "users",
+    JSON.stringify(updatedUsers)
+    );
 
-                <p className="mt-2 text-gray-600">
-                    Enter your blood glucose reading to save it and receive a quick interpretation.
-                </p>
+    setMessage(
+    "Health record saved successfully!"
+    );
 
-                <div className="mt-6">
-                    <label className="mb-2 block font-medium">
-                        Blood Glucose (mg/dL)
-                    </label>
+    setGlucose("");
 
-                    <input
-                        type="number"
-                        value={glucose}
-                        required
-                        onChange={(e) => setGlucose(e.target.value)}
-                        className="w-full rounded-lg border p-3"
-                        placeholder="Enter blood glucose"
-                    />
-                </div>
+    setFasting("yes");
 
-                <div className="mt-6">
-                    <label className="mb-2 block font-medium">
-                        Was this a fasting reading?
-                    </label>
+    router.refresh();
+}
 
-                    <select
-                        value={fasting}
-                        onChange={(e) => setFasting(e.target.value)}
-                        className="w-full rounded-lg border p-3"
-                    >
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                </div>
+return (
+    <form
+    onSubmit={handleSubmit}
+    className="mt-8 w-full max-w-2xl rounded-xl border bg-white p-4 shadow-sm sm:p-6"
+    >
+    <h2 className="text-2xl font-bold">
+        🩺 Check Blood Glucose
+    </h2>
 
-                <button
-                    type="submit"
-                    className="mt-6 rounded-lg bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition"
-                >
-                    Save Glucose Reading
-                </button>
+    <p className="mt-2 text-sm text-gray-600 sm:text-base">
+        Enter your blood glucose reading to save it
+        and receive a quick interpretation.
+    </p>
 
-                {message && (
-                    <p className="mt-4 text-green-600 font-medium">
-                        {message}
-                    </p>)
-                }
-                
-            </form>
-        );
-    }
+    <div className="mt-6">
+        <label className="mb-2 block font-medium">
+        Blood Glucose (mg/dL)
+        </label>
+
+        <input
+        type="number"
+        value={glucose}
+        required
+        onChange={(e) =>
+            setGlucose(e.target.value)
+        }
+        className="w-full rounded-lg border p-3"
+        placeholder="Enter blood glucose"
+        />
+    </div>
+
+    <div className="mt-6">
+        <label className="mb-2 block font-medium">
+        Was this a fasting reading?
+        </label>
+
+        <select
+        value={fasting}
+        onChange={(e) =>
+            setFasting(e.target.value)
+        }
+        className="w-full rounded-lg border p-3"
+        >
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+        </select>
+    </div>
+
+    <button
+        type="submit"
+        className="mt-6 w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+    >
+        Save Glucose Reading
+    </button>
+
+    {message && (
+        <p className="mt-4 font-medium text-green-600">
+        {message}
+        </p>
+    )}
+    </form>
+);
+}
+
