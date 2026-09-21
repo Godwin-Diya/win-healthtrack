@@ -33,23 +33,40 @@ export default function BloodPressurePage() {
         return "Your blood pressure is very high. Consider discussing this reading with a healthcare professional.";
     }
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    function handleSubmit(
+        e: React.FormEvent<HTMLFormElement>
+    ) {
         e.preventDefault();
 
         if (!systolic || !diastolic) {
-            setMessage("Please enter both blood pressure values.");
+            setMessage(
+                "Please enter both blood pressure values."
+            );
             return;
         }
 
         const systolicValue = Number(systolic);
         const diastolicValue = Number(diastolic);
 
+        if (
+            Number.isNaN(systolicValue) ||
+            Number.isNaN(diastolicValue) ||
+            systolicValue <= 0 ||
+            diastolicValue <= 0
+        ) {
+            setMessage(
+                "Please enter valid blood pressure values."
+            );
+            return;
+        }
+
         const status = getBloodPressureStatus(
             systolicValue,
             diastolicValue
         );
 
-        const savedUser = localStorage.getItem("currentUser");
+        const savedUser =
+            localStorage.getItem("currentUser");
 
         if (!savedUser) {
             router.replace("/login");
@@ -77,14 +94,18 @@ export default function BloodPressurePage() {
             JSON.stringify(currentUser)
         );
 
-        const savedUsers = localStorage.getItem("users");
+        const savedUsers =
+            localStorage.getItem("users");
 
         if (savedUsers) {
             const users = JSON.parse(savedUsers);
 
             const updatedUsers = users.map(
                 (existingUser: { email: string }) => {
-                    if (existingUser.email === currentUser.email) {
+                    if (
+                        existingUser.email ===
+                        currentUser.email
+                    ) {
                         return currentUser;
                     }
 
@@ -104,89 +125,119 @@ export default function BloodPressurePage() {
     }
 
     return (
-        <main className="min-h-screen w-full bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
-            <div className="mx-auto w-full max-w-2xl">
-                <div className="rounded-xl bg-white p-6 shadow-md sm:p-8">
+        <main className="min-h-screen bg-[#F8FAFC] px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-3xl">
+                <div className="rounded-3xl border border-blue-100 bg-white p-6 shadow-lg sm:p-8 lg:p-10">
 
                     <button
-                        onClick={() => router.push("/dashboard")}
-                        className="mb-6 text-sm font-semibold text-blue-600 hover:underline"
+                        onClick={() =>
+                            router.push("/dashboard")
+                        }
+                        className="mb-7 rounded-lg px-2 py-1 text-sm font-semibold text-[#123B8C] transition hover:bg-[#EAF2FF]"
                     >
                         ← Back to Dashboard
                     </button>
 
-                    <h1 className="text-3xl font-bold">
-                        Blood Pressure
-                    </h1>
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#EAF2FF] text-3xl">
+                            ❤️
+                        </div>
 
-                    <p className="mt-2 text-gray-600">
-                        Record your blood pressure reading.
-                    </p>
+                        <div>
+                            <p className="text-sm font-semibold text-[#123B8C]">
+                                Health Measurement
+                            </p>
+
+                            <h1 className="mt-1 text-3xl font-bold tracking-tight text-[#0B2559] sm:text-4xl">
+                                Blood Pressure
+                            </h1>
+
+                            <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">
+                                Record your blood pressure reading
+                                and keep it in your health history.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 rounded-2xl bg-[#EAF2FF] p-5">
+                        <p className="text-sm leading-6 text-[#0B2559]">
+                            Enter the two numbers from your blood
+                            pressure reading. Your systolic and
+                            diastolic values will be saved together
+                            in your health records.
+                        </p>
+                    </div>
 
                     <form
                         onSubmit={handleSubmit}
                         className="mt-8"
                     >
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
-                        {/* Blood Pressure Inputs */}
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-                            {/* Systolic */}
                             <div>
-                                <label className="mb-2 block font-medium">
-                                    Systolic (mmHg)
+                                <label className="mb-2 block text-sm font-semibold text-[#0B2559]">
+                                    Systolic
+                                    <span className="ml-1 font-normal text-[#64748B]">
+                                        (mmHg)
+                                    </span>
                                 </label>
 
                                 <input
                                     type="number"
                                     value={systolic}
                                     required
+                                    min="1"
                                     onChange={(e) =>
-                                        setSystolic(e.target.value)
+                                        setSystolic(
+                                            e.target.value
+                                        )
                                     }
-                                    className="w-full rounded-lg border p-3"
-                                    placeholder="e.g. 120"
+                                    className="w-full rounded-xl border border-slate-200 bg-white p-4 text-lg font-semibold text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                                    placeholder="120"
                                 />
                             </div>
 
-                            {/* Diastolic */}
                             <div>
-                                <label className="mb-2 block font-medium">
-                                    Diastolic (mmHg)
+                                <label className="mb-2 block text-sm font-semibold text-[#0B2559]">
+                                    Diastolic
+                                    <span className="ml-1 font-normal text-[#64748B]">
+                                        (mmHg)
+                                    </span>
                                 </label>
 
                                 <input
                                     type="number"
                                     value={diastolic}
                                     required
+                                    min="1"
                                     onChange={(e) =>
-                                        setDiastolic(e.target.value)
+                                        setDiastolic(
+                                            e.target.value
+                                        )
                                     }
-                                    className="w-full rounded-lg border p-3"
-                                    placeholder="e.g. 80"
+                                    className="w-full rounded-xl border border-slate-200 bg-white p-4 text-lg font-semibold text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                                    placeholder="80"
                                 />
                             </div>
-
                         </div>
 
                         <button
                             type="submit"
-                            className="mt-6 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+                            className="mt-7 w-full rounded-xl bg-[#123B8C] px-6 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg sm:w-auto"
                         >
-                            Save Reading
+                            Save Blood Pressure Reading
                         </button>
-
                     </form>
 
                     {message && (
-                        <p className="mt-4 text-sm font-medium text-gray-700">
-                            {message}
-                        </p>
+                        <div className="mt-6 rounded-xl border border-blue-100 bg-[#EAF2FF] p-4">
+                            <p className="text-sm font-semibold leading-6 text-[#0B2559]">
+                                {message}
+                            </p>
+                        </div>
                     )}
-
                 </div>
             </div>
         </main>
     );
 }
-
