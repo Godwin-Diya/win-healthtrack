@@ -11,171 +11,199 @@ export default function BMIPage() {
     const [message, setMessage] = useState("");
 
     function getBMIStatus(bmi: number) {
-    if (bmi < 18.5) {
-    return "This is below the usual healthy BMI range.";
-    }
+        if (bmi < 18.5) {
+            return "This is below the usual healthy BMI range.";
+        }
 
-    if (bmi < 25) {
-    return "This is within the usual healthy BMI range.";
-    }
+        if (bmi < 25) {
+            return "This is within the usual healthy BMI range.";
+        }
 
-    if (bmi < 30) {
-    return "This is above the usual healthy BMI range.";
-    }
+        if (bmi < 30) {
+            return "This is above the usual healthy BMI range.";
+        }
 
-    return "This is in the obesity range.";
+        return "This is in the obesity range.";
     }
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+        e.preventDefault();
 
-    if (!weight || !height) {
-        setMessage("Please enter both weight and height.");
-        return;
-    }
+        if (!weight || !height) {
+            setMessage("Please enter both weight and height.");
+            return;
+        }
 
-    const weightValue = Number(weight);
-    const heightValue = Number(height);
+        const weightValue = Number(weight);
+        const heightValue = Number(height);
 
-    if (weightValue <= 0 || heightValue <= 0) {
-        setMessage("Please enter valid weight and height values.");
-        return;
-    }
+        if (weightValue <= 0 || heightValue <= 0) {
+            setMessage("Please enter valid weight and height values.");
+            return;
+        }
 
-    const heightInMetres = heightValue / 100;
-    const bmi = weightValue / (heightInMetres * heightInMetres);
+        const heightInMetres = heightValue / 100;
+        const bmi = weightValue / (heightInMetres * heightInMetres);
 
-    const savedUser = localStorage.getItem("currentUser");
+        const savedUser = localStorage.getItem("currentUser");
 
-    if (!savedUser) {
-        router.replace("/login");
-        return;
-    }
+        if (!savedUser) {
+            router.replace("/login");
+            return;
+        }
 
-    const currentUser = JSON.parse(savedUser);
-    
-    const status = getBMIStatus(bmi);
-    const newRecord = {
-        id: crypto.randomUUID(),
-        weight,
-        height,
-        bmi: bmi.toFixed(1),
-        bmiResult: status,
-        date: new Date().toISOString(),
-    };
+        const currentUser = JSON.parse(savedUser);
 
-    if (!currentUser.healthRecords) {
-        currentUser.healthRecords = [];
-    }
+        const status = getBMIStatus(bmi);
 
-    currentUser.healthRecords.push(newRecord);
+        const newRecord = {
+            id: crypto.randomUUID(),
+            weight,
+            height,
+            bmi: bmi.toFixed(1),
+            bmiResult: status,
+            date: new Date().toISOString(),
+        };
 
-    localStorage.setItem(
-    "currentUser",
-    JSON.stringify(currentUser)
-    );
+        if (!currentUser.healthRecords) {
+            currentUser.healthRecords = [];
+        }
 
-    const savedUsers = localStorage.getItem("users");
+        currentUser.healthRecords.push(newRecord);
 
-    if (savedUsers) {
-    const users = JSON.parse(savedUsers);
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    const updatedUsers = users.map((existingUser: {
-    email: string;
-    }) => {
-    if (existingUser.email === currentUser.email) {
-        return currentUser;
-    }
+        const savedUsers = localStorage.getItem("users");
 
-    return existingUser;
-    });
+        if (savedUsers) {
+            const users = JSON.parse(savedUsers);
 
-    localStorage.setItem(
-    "users",
-    JSON.stringify(updatedUsers)
-    );
-    }
+            const updatedUsers = users.map(
+                (existingUser: { email: string }) => {
+                    if (existingUser.email === currentUser.email) {
+                        return currentUser;
+                    }
 
-    setMessage(`Your BMI is ${bmi.toFixed(1)}. ${status}`);
-    setWeight("");
-    setHeight("");
+                    return existingUser;
+                }
+            );
+
+            localStorage.setItem("users", JSON.stringify(updatedUsers));
+        }
+
+        setMessage(`Your BMI is ${bmi.toFixed(1)}. ${status}`);
+        setWeight("");
+        setHeight("");
     }
 
     return (
-    <main className="min-h-screen bg-gray-50 p-6">
-        <div className="mx-auto max-w-2xl">
-        <div className="rounded-xl bg-white p-8 shadow-md">
+        <main className="min-h-screen bg-[#F8FAFC] px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto w-full max-w-3xl">
+                <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-lg sm:p-8">
+                    <button
+                        onClick={() => router.push("/dashboard")}
+                        className="mb-6 rounded-lg px-2 py-2 text-sm font-semibold text-[#123B8C] transition hover:bg-[#EAF2FF]"
+                    >
+                        ← Back to Dashboard
+                    </button>
 
-            <button
-            onClick={() => router.push("/dashboard")}
-            className="mb-6 text-sm font-semibold text-blue-600 hover:underline"
-            >
-            ← Back to Dashboard
-            </button>
+                    <div className="flex items-start gap-4">
+                        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAF2FF] text-2xl">
+                            ⚖️
+                        </div>
 
-            <h1 className="text-3xl font-bold">
-            Body Mass Index
-            </h1>
+                        <div>
+                            <p className="text-sm font-semibold uppercase tracking-wide text-[#123B8C]">
+                                Body measurement
+                            </p>
 
-            <p className="mt-2 text-gray-600">
-            Enter your weight and height to calculate your BMI.
-            </p>
+                            <h1 className="mt-1 text-3xl font-bold tracking-tight text-[#0B2559] sm:text-4xl">
+                                Body Mass Index
+                            </h1>
 
-            <form
-            onSubmit={handleSubmit}
-            className="mt-8"
-            >
-            <div>
-                <label className="mb-2 block font-medium">
-                Weight (kg)
-                </label>
+                            <p className="mt-3 text-sm leading-6 text-[#64748B] sm:text-base">
+                                Enter your weight and height to calculate your
+                                BMI and save the result to your health records.
+                            </p>
+                        </div>
+                    </div>
 
-                <input
-                type="number"
-                step="0.1"
-                value={weight}
-                required
-                onChange={(e) => setWeight(e.target.value)}
-                className="w-full rounded-lg border p-3"
-                placeholder="e.g. 70"
-                />
+                    <form onSubmit={handleSubmit} className="mt-8">
+                        <div className="grid gap-5 sm:grid-cols-2">
+                            <div>
+                                <label
+                                    htmlFor="weight"
+                                    className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                                >
+                                    Weight (kg)
+                                </label>
+
+                                <input
+                                    id="weight"
+                                    type="number"
+                                    step="0.1"
+                                    value={weight}
+                                    required
+                                    onChange={(e) =>
+                                        setWeight(e.target.value)
+                                    }
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:bg-white focus:ring-4 focus:ring-[#EAF2FF]"
+                                    placeholder="e.g. 70"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="height"
+                                    className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                                >
+                                    Height (cm)
+                                </label>
+
+                                <input
+                                    id="height"
+                                    type="number"
+                                    step="0.1"
+                                    value={height}
+                                    required
+                                    onChange={(e) =>
+                                        setHeight(e.target.value)
+                                    }
+                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:bg-white focus:ring-4 focus:ring-[#EAF2FF]"
+                                    placeholder="e.g. 175"
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="mt-6 w-full rounded-xl bg-[#123B8C] px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-[#0B2559] sm:w-auto"
+                        >
+                            Calculate BMI
+                        </button>
+                    </form>
+
+                    {message && (
+                        <div className="mt-6 rounded-2xl border border-blue-100 bg-[#EAF2FF] p-4">
+                            <p className="font-semibold leading-6 text-[#123B8C]">
+                                {message}
+                            </p>
+                        </div>
+                    )}
+
+                    <div className="mt-8 rounded-2xl bg-[#F8FAFC] p-4">
+                        <p className="text-sm font-semibold text-[#0B2559]">
+                            About BMI
+                        </p>
+
+                        <p className="mt-2 text-sm leading-6 text-[#64748B]">
+                            BMI is a general measurement based on weight and
+                            height. It does not account for every factor that
+                            affects individual health.
+                        </p>
+                    </div>
+                </section>
             </div>
-
-            <div className="mt-6">
-                <label className="mb-2 block font-medium">
-                Height (cm)
-                </label>
-
-                <input
-                type="number"
-                step="0.1"
-                value={height}
-                required
-                onChange={(e) => setHeight(e.target.value)}
-                className="w-full rounded-lg border p-3"
-                placeholder="e.g. 175"
-                />
-            </div>
-
-            <button
-                type="submit"
-                className="mt-6 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
-            >
-                Calculate BMI
-            </button>
-            </form>
-
-            {message && (
-            <p className="mt-6 rounded-lg bg-gray-50 p-4 font-semibold text-gray-700">
-                {message}
-            </p>
-            )}
-        
-        
-                
-                </div>
-        </div>
-    </main>);
+        </main>
+    );
 }
-
-

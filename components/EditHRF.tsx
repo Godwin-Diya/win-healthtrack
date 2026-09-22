@@ -1,96 +1,113 @@
 "use client";
 
 import { useState } from "react";
-
 import type { HealthRecord } from "@/types/health";
-
 import { getGlucoseStatus } from "@/utils/glucoseStatus";
 
 type EditHealthRecordFormProps = {
-  record: HealthRecord;
-  onSave: (updatedRecord: HealthRecord) => void;
-  onCancel: () => void;
+    record: HealthRecord;
+    onSave: (updatedRecord: HealthRecord) => void;
+    onCancel: () => void;
 };
 
 export default function EditHealthRecordForm({
-  record,
-  onSave,
-  onCancel,
+    record,
+    onSave,
+    onCancel,
 }: EditHealthRecordFormProps) {
-  const [glucose, setGlucose] = useState(record.glucose);
+    const [glucose, setGlucose] = useState(record.glucose);
+    const [fasting, setFasting] = useState(record.fasting);
 
-  const [fasting, setFasting] = useState(record.fasting);
+    function handleSubmit(
+        e: React.FormEvent<HTMLFormElement>
+    ) {
+        e.preventDefault();
 
-  function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
+        const updatedRecord: HealthRecord = {
+            ...record,
+            glucose,
+            fasting,
+            result: getGlucoseStatus(glucose, fasting),
+        };
 
-    const updatedRecord: HealthRecord = {
-      ...record,
-      glucose,
-      fasting,
-      result: getGlucoseStatus(glucose, fasting),
-    };
+        onSave(updatedRecord);
+    }
 
-    onSave(updatedRecord);
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className="mt-4 w-full rounded-lg border bg-gray-50 p-4 sm:p-6"
-    >
-      <h3 className="text-lg font-semibold">
-        Edit Health Record
-      </h3>
-
-      <div className="mt-4">
-        <label className="mb-2 block font-medium">
-          Blood Glucose (mg/dL)
-        </label>
-
-        <input
-          type="number"
-          value={glucose}
-          required
-          onChange={(e) => setGlucose(e.target.value)}
-          className="w-full rounded-lg border p-3"
-        />
-      </div>
-
-      <div className="mt-4">
-        <label className="mb-2 block font-medium">
-          Was this a fasting reading?
-        </label>
-
-        <select
-          value={fasting}
-          onChange={(e) => setFasting(e.target.value)}
-          className="w-full rounded-lg border p-3"
+    return (
+        <form
+            onSubmit={handleSubmit}
+            className="mt-5 w-full rounded-3xl border border-blue-100 bg-[#F8FAFC] p-5 shadow-sm sm:p-8"
         >
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-      </div>
+            <div className="flex items-start gap-3">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#EAF2FF] text-lg">
+                    ✏️
+                </div>
 
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-        <button
-          type="submit"
-          className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700 sm:w-auto"
-        >
-          Save Changes
-        </button>
+                <div>
+                    <h3 className="text-xl font-bold text-[#0B2559]">
+                        Edit Health Record
+                    </h3>
 
-        <button
-          type="button"
-          onClick={onCancel}
-          className="w-full rounded-lg border px-4 py-2 font-semibold hover:bg-gray-100 sm:w-auto"
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
+                    <p className="mt-1 text-sm text-[#64748B]">
+                        Update the reading details below.
+                    </p>
+                </div>
+            </div>
+
+            <div className="mt-6">
+                <label
+                    htmlFor="edit-glucose"
+                    className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                >
+                    Blood Glucose (mg/dL)
+                </label>
+
+                <input
+                    id="edit-glucose"
+                    type="number"
+                    value={glucose}
+                    required
+                    onChange={(e) => setGlucose(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white p-3 text-slate-800 outline-none transition focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                />
+            </div>
+
+            <div className="mt-5">
+                <label
+                    htmlFor="edit-fasting"
+                    className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                >
+                    Was this a fasting reading?
+                </label>
+
+                <select
+                    id="edit-fasting"
+                    value={fasting}
+                    onChange={(e) => setFasting(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white p-3 text-slate-800 outline-none transition focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                >
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <button
+                    type="submit"
+                    className="w-full rounded-xl bg-[#123B8C] px-4 py-3 font-semibold text-white transition hover:bg-[#0B2559] sm:w-auto"
+                >
+                    Save Changes
+                </button>
+
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 font-semibold text-[#0B2559] transition hover:bg-[#EAF2FF] sm:w-auto"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    );
 }
 
