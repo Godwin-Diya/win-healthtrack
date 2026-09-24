@@ -6,7 +6,7 @@ export default function Navbar() {
             <nav className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
                 <Link
                     href="/"
-                    className="text-center text-4xl font-black tracking-tight text-[#123B8C] transition hover:text-[#0B2559] lg:text-left"
+                    className="text-center text-5xl font-bold tracking-tight text-[#123B8C] transition hover:text-[#0B2559] lg:text-left"
                     >
                     🩺 Win HealthTrack
                 </Link>
