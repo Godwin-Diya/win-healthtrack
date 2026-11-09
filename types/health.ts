@@ -8,7 +8,6 @@ export type HealthRecord = {
     diastolic?: string;
     bloodPressureResult?: string;
 
-
     weight?: string;
     height?: string;
 
@@ -20,9 +19,8 @@ export type HealthRecord = {
 };
 
 export type User = {
+    id: string;
     fullName: string;
     email: string;
-    password: string;
-
     healthRecords?: HealthRecord[];
 };

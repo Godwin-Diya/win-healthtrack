@@ -59,13 +59,4 @@ export default function Navbar() {
     );
 }
 
-<p> ydiddidgwiegiu
-    fjfkfkfififidj
-    dhdjdkkoe
-    djdkdkieuyei9e8yei9e89
-    gjieieioeoio
-    Work is starting straight away
-
-    Lets go guys
-</p>
 
