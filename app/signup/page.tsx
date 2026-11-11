@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { User } from "@/types/health";
+import { supabase } from "@/lib/supabase";
 
 export default function SignUpPage() {
     const [fullName, setFullname] = useState("");
@@ -9,14 +9,18 @@ export default function SignUpPage() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const passwordPattern =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-    function handleSignup() {
+    async function handleSignup() {
         setError("");
+        setSuccess("");
 
         if (!fullName.trim()) {
             setError("Please enter your full name.");
@@ -28,7 +32,7 @@ export default function SignUpPage() {
             return;
         }
 
-        if (!emailPattern.test(email)) {
+        if (!emailPattern.test(email.trim())) {
             setError("Please enter a valid email address.");
             return;
         }
@@ -55,41 +59,46 @@ export default function SignUpPage() {
             return;
         }
 
-        const newUser: User = {
-            fullName: fullName.trim(),
-            email: email.trim().toLowerCase(),
-            password,
-            healthRecords: [],
-        };
+        setLoading(true);
 
-        const existingUsers =
-            localStorage.getItem("users");
+        try {
+            const { data, error: signupError } =
+                await supabase.auth.signUp({
+                    email: email.trim().toLowerCase(),
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName.trim(),
+                        },
+                    },
+                });
 
-        const users: User[] = existingUsers
-            ? JSON.parse(existingUsers)
-            : [];
+            if (signupError) {
+                setError(signupError.message);
+                return;
+            }
 
-        const emailExists = users.some(
-            (user) =>
-                user.email.toLowerCase() ===
-                email.toLowerCase()
-        );
+            if (data.session) {
+                setSuccess(
+                    "Your account has been created successfully! You can now log in."
+                );
+            } else {
+                setSuccess(
+                    "Your account has been created! Please check your email and confirm your account before logging in."
+                );
+            }
 
-        if (emailExists) {
+            setFullname("");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+        } catch {
             setError(
-                "An account with this email already exists."
+                "Something went wrong while creating your account. Please try again."
             );
-            return;
+        } finally {
+            setLoading(false);
         }
-
-        users.push(newUser);
-
-        localStorage.setItem(
-            "users",
-            JSON.stringify(users)
-        );
-
-        alert("Account created successfully!");
     }
 
     return (
@@ -123,6 +132,7 @@ export default function SignUpPage() {
                                 setFullname(e.target.value)
                             }
                             placeholder="Enter your full name"
+                            autoComplete="name"
                             className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                         />
                     </div>
@@ -139,6 +149,7 @@ export default function SignUpPage() {
                                 setEmail(e.target.value)
                             }
                             placeholder="Enter your email address"
+                            autoComplete="email"
                             className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                         />
                     </div>
@@ -159,6 +170,7 @@ export default function SignUpPage() {
                                 setPassword(e.target.value)
                             }
                             placeholder="Create a password"
+                            autoComplete="new-password"
                             className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                         />
                     </div>
@@ -181,6 +193,7 @@ export default function SignUpPage() {
                                 )
                             }
                             placeholder="Confirm your password"
+                            autoComplete="new-password"
                             className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                         />
                     </div>
@@ -198,17 +211,32 @@ export default function SignUpPage() {
                     </button>
 
                     {error && (
-                        <p className="mt-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium leading-5 text-red-600">
+                        <p
+                            role="alert"
+                            className="mt-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium leading-5 text-red-600"
+                        >
                             {error}
+                        </p>
+                    )}
+
+                    {success && (
+                        <p
+                            role="status"
+                            className="mt-4 rounded-xl border border-green-100 bg-green-50 p-3 text-sm font-medium leading-5 text-green-700"
+                        >
+                            {success}
                         </p>
                     )}
 
                     <button
                         type="button"
                         onClick={handleSignup}
-                        className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg"
+                        disabled={loading}
+                        className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        Create Account
+                        {loading
+                            ? "Creating Account..."
+                            : "Create Account"}
                     </button>
 
                     <p className="mt-6 text-center text-xs leading-5 text-[#64748B]">
