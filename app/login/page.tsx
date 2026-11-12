@@ -2,44 +2,57 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import type { User } from "@/types/health";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
 
-    function handleLogin() {
+    async function handleLogin() {
         setError("");
 
-        const savedUsers = localStorage.getItem("users");
-
-        const users: User[] = savedUsers ? JSON.parse(savedUsers) : [];
-
-        const user = users.find(
-            (user) =>
-                user.email.toLowerCase() === email.toLowerCase()
-        );
-
-        if (!user) {
-            setError("No account found with this email address.");
+        if (!email.trim()) {
+            setError("Please enter your email address.");
             return;
         }
 
-        if (user.password !== password) {
-            setError("Incorrect password.");
+        if (!password) {
+            setError("Please enter your password.");
             return;
         }
 
-        localStorage.setItem(
-            "currentUser",
-            JSON.stringify(user)
-        );
+        setLoading(true);
 
-        router.push("/dashboard");
+        try {
+            const { error: loginError } =
+                await supabase.auth.signInWithPassword({
+                    email: email.trim().toLowerCase(),
+                    password,
+                });
+
+            if (loginError) {
+                setError(
+                    loginError.message === "Invalid login credentials"
+                        ? "Incorrect email address or password."
+                        : loginError.message
+                );
+                return;
+            }
+
+            router.push("/dashboard");
+            router.refresh();
+        } catch {
+            setError(
+                "Something went wrong while logging in. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -80,6 +93,7 @@ export default function LoginPage() {
                                 }
                                 className="w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                                 placeholder="Enter your email"
+                                autoComplete="email"
                                 required
                             />
                         </div>
@@ -102,6 +116,7 @@ export default function LoginPage() {
                                     }
                                     className="w-full rounded-xl border border-slate-200 bg-white p-3.5 pr-20 text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                                     placeholder="Enter your password"
+                                    autoComplete="current-password"
                                     required
                                 />
 
@@ -118,29 +133,36 @@ export default function LoginPage() {
                         </div>
 
                         {error && (
-                            <p className="mt-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium leading-5 text-red-600">
+                            <p
+                                role="alert"
+                                className="mt-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium leading-5 text-red-600"
+                            >
                                 {error}
                             </p>
                         )}
 
                         <button
                             type="submit"
-                            className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg"
+                            disabled={loading}
+                            className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            Log In
+                            {loading ? "Logging In..." : "Log In"}
                         </button>
                     </form>
 
                     <div className="my-7 flex items-center gap-3">
                         <div className="h-px flex-1 bg-slate-200" />
+
                         <span className="text-xs text-slate-400">
                             OR
                         </span>
+
                         <div className="h-px flex-1 bg-slate-200" />
                     </div>
 
                     <p className="text-center text-sm text-[#64748B]">
                         Don&apos;t have an account?{" "}
+
                         <button
                             type="button"
                             onClick={() =>
@@ -156,4 +178,5 @@ export default function LoginPage() {
         </main>
     );
 }
+
 
