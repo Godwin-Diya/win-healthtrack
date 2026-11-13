@@ -16,8 +16,8 @@ export default function HealthRecordCard({
     const statusClass = glucoseStatus.toLowerCase().includes("high")
         ? "border-red-100 bg-red-50 text-red-700"
         : glucoseStatus.toLowerCase().includes("low")
-          ? "border-yellow-100 bg-yellow-50 text-yellow-700"
-          : "border-blue-100 bg-[#EAF2FF] text-[#123B8C]";
+        ? "border-yellow-100 bg-yellow-50 text-yellow-700"
+        : "border-blue-100 bg-[#EAF2FF] text-[#123B8C]";
 
     return (
         <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition hover:shadow-md sm:p-6">
