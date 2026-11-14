@@ -1,7 +1,9 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function BloodPressurePage() {
     const router = useRouter();
@@ -9,6 +11,7 @@ export default function BloodPressurePage() {
     const [systolic, setSystolic] = useState("");
     const [diastolic, setDiastolic] = useState("");
     const [message, setMessage] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
 
     function getBloodPressureStatus(
         systolic: number,
@@ -33,10 +36,11 @@ export default function BloodPressurePage() {
         return "Your blood pressure is very high. Consider discussing this reading with a healthcare professional.";
     }
 
-    function handleSubmit(
-        e: React.FormEvent<HTMLFormElement>
+    async function handleSubmit(
+        e: FormEvent<HTMLFormElement>
     ) {
         e.preventDefault();
+        setMessage("");
 
         if (!systolic || !diastolic) {
             setMessage(
@@ -49,8 +53,8 @@ export default function BloodPressurePage() {
         const diastolicValue = Number(diastolic);
 
         if (
-            Number.isNaN(systolicValue) ||
-            Number.isNaN(diastolicValue) ||
+            !Number.isFinite(systolicValue) ||
+            !Number.isFinite(diastolicValue) ||
             systolicValue <= 0 ||
             diastolicValue <= 0
         ) {
@@ -65,63 +69,59 @@ export default function BloodPressurePage() {
             diastolicValue
         );
 
-        const savedUser =
-            localStorage.getItem("currentUser");
+        setIsSaving(true);
 
-        if (!savedUser) {
-            router.replace("/login");
-            return;
-        }
+        try {
+            // Get the currently logged-in Supabase user.
+            const {
+                data: { user },
+                error: authError,
+            } = await supabase.auth.getUser();
 
-        const currentUser = JSON.parse(savedUser);
+            if (authError || !user) {
+                router.replace("/login");
+                return;
+            }
 
-        const newRecord = {
-            id: crypto.randomUUID(),
-            systolic,
-            diastolic,
-            bloodPressureResult: status,
-            date: new Date().toISOString(),
-        };
+            // Save the blood pressure reading to Supabase.
+            const { error: insertError } = await supabase
+                .from("health_records")
+                .insert({
+                    user_id: user.id,
+                    systolic: systolicValue,
+                    diastolic: diastolicValue,
+                    blood_pressure_result: status,
+                    recorded_at: new Date().toISOString(),
+                });
 
-        if (!currentUser.healthRecords) {
-            currentUser.healthRecords = [];
-        }
+            if (insertError) {
+                console.error(
+                    "Blood pressure save error:",
+                    insertError
+                );
 
-        currentUser.healthRecords.push(newRecord);
+                setMessage(
+                    "Unable to save your reading. Please try again."
+                );
+                return;
+            }
 
-        localStorage.setItem(
-            "currentUser",
-            JSON.stringify(currentUser)
-        );
+            setSystolic("");
+            setDiastolic("");
 
-        const savedUsers =
-            localStorage.getItem("users");
-
-        if (savedUsers) {
-            const users = JSON.parse(savedUsers);
-
-            const updatedUsers = users.map(
-                (existingUser: { email: string }) => {
-                    if (
-                        existingUser.email ===
-                        currentUser.email
-                    ) {
-                        return currentUser;
-                    }
-
-                    return existingUser;
-                }
+            setMessage(`Reading saved successfully. ${status}`);
+        } catch (error) {
+            console.error(
+                "Unexpected error:",
+                error
             );
 
-            localStorage.setItem(
-                "users",
-                JSON.stringify(updatedUsers)
+            setMessage(
+                "Something went wrong. Please try again."
             );
+        } finally {
+            setIsSaving(false);
         }
-
-        setSystolic("");
-        setDiastolic("");
-        setMessage(`Reading saved. ${status}`);
     }
 
     return (
@@ -188,9 +188,7 @@ export default function BloodPressurePage() {
                                     required
                                     min="1"
                                     onChange={(e) =>
-                                        setSystolic(
-                                            e.target.value
-                                        )
+                                        setSystolic(e.target.value)
                                     }
                                     className="w-full rounded-xl border border-slate-200 bg-white p-4 text-lg font-semibold text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                                     placeholder="120"
@@ -211,9 +209,7 @@ export default function BloodPressurePage() {
                                     required
                                     min="1"
                                     onChange={(e) =>
-                                        setDiastolic(
-                                            e.target.value
-                                        )
+                                        setDiastolic(e.target.value)
                                     }
                                     className="w-full rounded-xl border border-slate-200 bg-white p-4 text-lg font-semibold text-[#0B2559] outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
                                     placeholder="80"
@@ -223,9 +219,12 @@ export default function BloodPressurePage() {
 
                         <button
                             type="submit"
-                            className="mt-7 w-full rounded-xl bg-[#123B8C] px-6 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg sm:w-auto"
+                            disabled={isSaving}
+                            className="mt-7 w-full rounded-xl bg-[#123B8C] px-6 py-3.5 font-bold text-white shadow-md transition hover:bg-[#0B2559] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                         >
-                            Save Blood Pressure Reading
+                            {isSaving
+                                ? "Saving Reading..."
+                                : "Save Blood Pressure Reading"}
                         </button>
                     </form>
 

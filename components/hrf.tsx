@@ -1,13 +1,16 @@
+
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { HealthRecord, User } from "@/types/health";
+import { supabase } from "@/lib/supabase";
 
 export default function HealthRecordForm() {
     const [glucose, setGlucose] = useState("");
     const [fasting, setFasting] = useState("yes");
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+
     const router = useRouter();
 
     function getGlucoseStatus(
@@ -45,8 +48,12 @@ export default function HealthRecordForm() {
         return "High blood glucose.";
     }
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(
+        e: React.FormEvent<HTMLFormElement>
+    ) {
         e.preventDefault();
+
+        setMessage("");
 
         const glucoseValue = Number(glucose);
 
@@ -59,63 +66,53 @@ export default function HealthRecordForm() {
             return;
         }
 
-        const result = getGlucoseStatus(glucoseValue, fasting);
+        setLoading(true);
 
-        const newRecord: HealthRecord = {
-            id: crypto.randomUUID(),
-            glucose,
-            fasting,
-            date: new Date().toISOString(),
-            result,
-        };
+        try {
+            // Get the currently authenticated Supabase user
+            const {
+                data: { user },
+                error: userError,
+            } = await supabase.auth.getUser();
 
-        const savedUser = localStorage.getItem("currentUser");
-
-        if (!savedUser) {
-            return;
-        }
-
-        const currentUser: User = JSON.parse(savedUser);
-
-        if (!currentUser.healthRecords) {
-            currentUser.healthRecords = [];
-        }
-
-        currentUser.healthRecords.push(newRecord);
-
-        localStorage.setItem(
-            "currentUser",
-            JSON.stringify(currentUser)
-        );
-
-        const savedUsers = localStorage.getItem("users");
-
-        if (!savedUsers) {
-            setMessage("Health record saved successfully!");
-            return;
-        }
-
-        const users: User[] = JSON.parse(savedUsers);
-
-        const updatedUsers = users.map((user) => {
-            if (user.email === currentUser.email) {
-                return currentUser;
+            if (userError || !user) {
+                setMessage("Your session has expired. Please log in again.");
+                router.push("/login");
+                return;
             }
 
-            return user;
-        });
+            // Interpret the glucose reading
+            const result = getGlucoseStatus(glucoseValue, fasting);
 
-        localStorage.setItem(
-            "users",
-            JSON.stringify(updatedUsers)
-        );
+            // Save the reading to Supabase
+            const { error: insertError } = await supabase
+                .from("health_records")
+                .insert({
+                    user_id: user.id,
+                    glucose: glucoseValue,
+                    fasting,
+                    result,
+                    recorded_at: new Date().toISOString(),
+                });
 
-        setMessage("Health record saved successfully!");
+            if (insertError) {
+                console.error("Glucose record error:", insertError);
+                setMessage("Unable to save your reading. Please try again.");
+                return;
+            }
 
-        setGlucose("");
-        setFasting("yes");
+            setMessage("Health record saved successfully!");
 
-        router.refresh();
+            setGlucose("");
+            setFasting("yes");
+
+            router.refresh();
+        } catch (error) {
+            console.error("Unexpected error:", error);
+            setMessage("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -153,6 +150,8 @@ export default function HealthRecordForm() {
                     type="number"
                     value={glucose}
                     required
+                    min="0.1"
+                    step="any"
                     onChange={(e) => setGlucose(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:bg-white focus:ring-4 focus:ring-[#EAF2FF]"
                     placeholder="Enter blood glucose"
@@ -180,9 +179,10 @@ export default function HealthRecordForm() {
 
             <button
                 type="submit"
-                className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#0B2559] sm:w-auto"
+                disabled={loading}
+                className="mt-6 w-full rounded-xl bg-[#123B8C] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#0B2559] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
-                Save Glucose Reading
+                {loading ? "Saving Reading..." : "Save Glucose Reading"}
             </button>
 
             {message && (
@@ -193,6 +193,7 @@ export default function HealthRecordForm() {
         </form>
     );
 }
+
 
 
 
