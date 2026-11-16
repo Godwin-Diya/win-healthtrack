@@ -1,7 +1,9 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function BMIPage() {
     const router = useRouter();
@@ -9,6 +11,7 @@ export default function BMIPage() {
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
     const [message, setMessage] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
 
     function getBMIStatus(bmi: number) {
         if (bmi < 18.5) {
@@ -26,8 +29,11 @@ export default function BMIPage() {
         return "This is in the obesity range.";
     }
 
-    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(
+        e: FormEvent<HTMLFormElement>
+    ) {
         e.preventDefault();
+        setMessage("");
 
         if (!weight || !height) {
             setMessage("Please enter both weight and height.");
@@ -37,69 +43,90 @@ export default function BMIPage() {
         const weightValue = Number(weight);
         const heightValue = Number(height);
 
-        if (weightValue <= 0 || heightValue <= 0) {
-            setMessage("Please enter valid weight and height values.");
+        if (
+            !Number.isFinite(weightValue) ||
+            !Number.isFinite(heightValue) ||
+            weightValue <= 0 ||
+            heightValue <= 0
+        ) {
+            setMessage(
+                "Please enter valid weight and height values."
+            );
             return;
         }
 
         const heightInMetres = heightValue / 100;
-        const bmi = weightValue / (heightInMetres * heightInMetres);
 
-        const savedUser = localStorage.getItem("currentUser");
-
-        if (!savedUser) {
-            router.replace("/login");
-            return;
-        }
-
-        const currentUser = JSON.parse(savedUser);
+        const bmi =
+            weightValue /
+            (heightInMetres * heightInMetres);
 
         const status = getBMIStatus(bmi);
 
-        const newRecord = {
-            id: crypto.randomUUID(),
-            weight,
-            height,
-            bmi: bmi.toFixed(1),
-            bmiResult: status,
-            date: new Date().toISOString(),
-        };
+        setIsSaving(true);
 
-        if (!currentUser.healthRecords) {
-            currentUser.healthRecords = [];
-        }
+        try {
+            // Get the currently logged-in Supabase user.
+            const {
+                data: { user },
+                error: authError,
+            } = await supabase.auth.getUser();
 
-        currentUser.healthRecords.push(newRecord);
+            if (authError || !user) {
+                router.replace("/login");
+                return;
+            }
 
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+            // Save the BMI record to Supabase.
+            const { error: insertError } = await supabase
+                .from("health_records")
+                .insert({
+                    user_id: user.id,
+                    weight: weightValue,
+                    height: heightValue,
+                    bmi: Number(bmi.toFixed(1)),
+                    bmi_result: status,
+                    recorded_at: new Date().toISOString(),
+                });
 
-        const savedUsers = localStorage.getItem("users");
+            if (insertError) {
+                console.error(
+                    "BMI save error:",
+                    insertError
+                );
 
-        if (savedUsers) {
-            const users = JSON.parse(savedUsers);
+                setMessage(
+                    "Unable to save your BMI record. Please try again."
+                );
+                return;
+            }
 
-            const updatedUsers = users.map(
-                (existingUser: { email: string }) => {
-                    if (existingUser.email === currentUser.email) {
-                        return currentUser;
-                    }
-
-                    return existingUser;
-                }
+            setMessage(
+                `Your BMI is ${bmi.toFixed(1)}. ${status}`
             );
 
-            localStorage.setItem("users", JSON.stringify(updatedUsers));
-        }
+            setWeight("");
+            setHeight("");
+        } catch (error) {
+            console.error(
+                "Unexpected error:",
+                error
+            );
 
-        setMessage(`Your BMI is ${bmi.toFixed(1)}. ${status}`);
-        setWeight("");
-        setHeight("");
+            setMessage(
+                "Something went wrong. Please try again."
+            );
+        } finally {
+            setIsSaving(false);
+        }
     }
 
     return (
         <main className="min-h-screen bg-[#F8FAFC] px-4 py-8 sm:px-6 lg:px-8">
             <div className="mx-auto w-full max-w-3xl">
+
                 <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-lg sm:p-8">
+
                     <button
                         onClick={() => router.push("/dashboard")}
                         className="mb-6 rounded-lg px-2 py-2 text-sm font-semibold text-[#123B8C] transition hover:bg-[#EAF2FF]"
@@ -108,6 +135,7 @@ export default function BMIPage() {
                     </button>
 
                     <div className="flex items-start gap-4">
+
                         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#EAF2FF] text-2xl">
                             ⚖️
                         </div>
@@ -126,10 +154,15 @@ export default function BMIPage() {
                                 BMI and save the result to your health records.
                             </p>
                         </div>
+
                     </div>
 
-                    <form onSubmit={handleSubmit} className="mt-8">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="mt-8"
+                    >
                         <div className="grid gap-5 sm:grid-cols-2">
+
                             <div>
                                 <label
                                     htmlFor="weight"
@@ -142,6 +175,7 @@ export default function BMIPage() {
                                     id="weight"
                                     type="number"
                                     step="0.1"
+                                    min="0.1"
                                     value={weight}
                                     required
                                     onChange={(e) =>
@@ -164,6 +198,7 @@ export default function BMIPage() {
                                     id="height"
                                     type="number"
                                     step="0.1"
+                                    min="0.1"
                                     value={height}
                                     required
                                     onChange={(e) =>
@@ -173,14 +208,19 @@ export default function BMIPage() {
                                     placeholder="e.g. 175"
                                 />
                             </div>
+
                         </div>
 
                         <button
                             type="submit"
-                            className="mt-6 w-full rounded-xl bg-[#123B8C] px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-[#0B2559] sm:w-auto"
+                            disabled={isSaving}
+                            className="mt-6 w-full rounded-xl bg-[#123B8C] px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-[#0B2559] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
                         >
-                            Calculate BMI
+                            {isSaving
+                                ? "Saving BMI..."
+                                : "Calculate BMI"}
                         </button>
+
                     </form>
 
                     {message && (
@@ -192,6 +232,7 @@ export default function BMIPage() {
                     )}
 
                     <div className="mt-8 rounded-2xl bg-[#F8FAFC] p-4">
+
                         <p className="text-sm font-semibold text-[#0B2559]">
                             About BMI
                         </p>
@@ -201,8 +242,11 @@ export default function BMIPage() {
                             height. It does not account for every factor that
                             affects individual health.
                         </p>
+
                     </div>
+
                 </section>
+
             </div>
         </main>
     );
