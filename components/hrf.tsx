@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -10,6 +9,24 @@ export default function HealthRecordForm() {
     const [fasting, setFasting] = useState("yes");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Default test date and time to the current local date and time.
+    const [testedDate, setTestedDate] = useState(() => {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    });
+
+    const [testedTime, setTestedTime] = useState(() => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+
+        return `${hours}:${minutes}`;
+    });
 
     const router = useRouter();
 
@@ -66,10 +83,22 @@ export default function HealthRecordForm() {
             return;
         }
 
+        // Use the selected test date/time, or the current time
+        // if either optional field is left blank.
+        const selectedTestDateTime =
+            testedDate && testedTime
+                ? new Date(`${testedDate}T${testedTime}`)
+                : new Date();
+
+        if (Number.isNaN(selectedTestDateTime.getTime())) {
+            setMessage("Please enter a valid test date and time.");
+            return;
+        }
+
         setLoading(true);
 
         try {
-            // Get the currently authenticated Supabase user
+            // Get the currently authenticated Supabase user.
             const {
                 data: { user },
                 error: userError,
@@ -81,10 +110,10 @@ export default function HealthRecordForm() {
                 return;
             }
 
-            // Interpret the glucose reading
+            // Interpret the glucose reading.
             const result = getGlucoseStatus(glucoseValue, fasting);
 
-            // Save the reading to Supabase
+            // Save the reading to Supabase.
             const { error: insertError } = await supabase
                 .from("health_records")
                 .insert({
@@ -92,6 +121,7 @@ export default function HealthRecordForm() {
                     glucose: glucoseValue,
                     fasting,
                     result,
+                    tested_at: selectedTestDateTime.toISOString(),
                     recorded_at: new Date().toISOString(),
                 });
 
@@ -177,6 +207,54 @@ export default function HealthRecordForm() {
                 </select>
             </div>
 
+            {/* Optional test date and time */}
+            <div className="mt-5 rounded-2xl border border-blue-100 bg-[#F8FAFC] p-4">
+                <h3 className="text-sm font-bold text-[#0B2559]">
+                    When was this test performed?
+                </h3>
+
+                <p className="mt-1 text-xs leading-5 text-[#64748B]">
+                    These fields are optional. You can change them if the
+                    test was performed earlier.
+                </p>
+
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label
+                            htmlFor="glucose-test-date"
+                            className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                        >
+                            Test Date
+                        </label>
+
+                        <input
+                            id="glucose-test-date"
+                            type="date"
+                            value={testedDate}
+                            onChange={(e) => setTestedDate(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none transition focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            htmlFor="glucose-test-time"
+                            className="mb-2 block text-sm font-semibold text-[#0B2559]"
+                        >
+                            Test Time
+                        </label>
+
+                        <input
+                            id="glucose-test-time"
+                            type="time"
+                            value={testedTime}
+                            onChange={(e) => setTestedTime(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm text-slate-800 outline-none transition focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <button
                 type="submit"
                 disabled={loading}
@@ -193,5 +271,3 @@ export default function HealthRecordForm() {
         </form>
     );
 }
-
-
