@@ -1,15 +1,33 @@
-
 "use client";
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+function getLocalDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function getLocalTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+
+    return `${hours}:${minutes}`;
+}
+
 export default function BMIPage() {
     const router = useRouter();
 
     const [weight, setWeight] = useState("");
     const [height, setHeight] = useState("");
+    const [testedDate, setTestedDate] = useState(getLocalDate);
+    const [testedTime, setTestedTime] = useState(getLocalTime);
     const [message, setMessage] = useState("");
     const [isSaving, setIsSaving] = useState(false);
 
@@ -29,9 +47,7 @@ export default function BMIPage() {
         return "This is in the obesity range.";
     }
 
-    async function handleSubmit(
-        e: FormEvent<HTMLFormElement>
-    ) {
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setMessage("");
 
@@ -63,6 +79,20 @@ export default function BMIPage() {
 
         const status = getBMIStatus(bmi);
 
+        // Use the selected test date and time.
+        // If either field is left blank, use the current local value.
+        const dateToUse = testedDate || getLocalDate();
+        const timeToUse = testedTime || getLocalTime();
+
+        const selectedTestDateTime = new Date(
+            `${dateToUse}T${timeToUse}:00`
+        );
+
+        if (Number.isNaN(selectedTestDateTime.getTime())) {
+            setMessage("Please enter a valid test date and time.");
+            return;
+        }
+
         setIsSaving(true);
 
         try {
@@ -86,14 +116,12 @@ export default function BMIPage() {
                     height: heightValue,
                     bmi: Number(bmi.toFixed(1)),
                     bmi_result: status,
+                    tested_at: selectedTestDateTime.toISOString(),
                     recorded_at: new Date().toISOString(),
                 });
 
             if (insertError) {
-                console.error(
-                    "BMI save error:",
-                    insertError
-                );
+                console.error("BMI save error:", insertError);
 
                 setMessage(
                     "Unable to save your BMI record. Please try again."
@@ -107,11 +135,10 @@ export default function BMIPage() {
 
             setWeight("");
             setHeight("");
+            setTestedDate(getLocalDate());
+            setTestedTime(getLocalTime());
         } catch (error) {
-            console.error(
-                "Unexpected error:",
-                error
-            );
+            console.error("Unexpected error:", error);
 
             setMessage(
                 "Something went wrong. Please try again."
@@ -161,6 +188,7 @@ export default function BMIPage() {
                         onSubmit={handleSubmit}
                         className="mt-8"
                     >
+
                         <div className="grid gap-5 sm:grid-cols-2">
 
                             <div>
@@ -178,9 +206,7 @@ export default function BMIPage() {
                                     min="0.1"
                                     value={weight}
                                     required
-                                    onChange={(e) =>
-                                        setWeight(e.target.value)
-                                    }
+                                    onChange={(e) => setWeight(e.target.value)}
                                     className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:bg-white focus:ring-4 focus:ring-[#EAF2FF]"
                                     placeholder="e.g. 70"
                                 />
@@ -201,14 +227,56 @@ export default function BMIPage() {
                                     min="0.1"
                                     value={height}
                                     required
-                                    onChange={(e) =>
-                                        setHeight(e.target.value)
-                                    }
+                                    onChange={(e) => setHeight(e.target.value)}
                                     className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#123B8C] focus:bg-white focus:ring-4 focus:ring-[#EAF2FF]"
                                     placeholder="e.g. 175"
                                 />
                             </div>
 
+                        </div>
+
+                        {/* Test date and time */}
+
+                        <div className="mt-7 rounded-2xl border border-blue-100 bg-slate-50 p-5">
+
+                            <h2 className="text-base font-bold text-[#0B2559]">
+                                When was this measurement taken?
+                            </h2>
+
+                            <p className="mt-1 text-sm text-[#64748B]">
+                                You can change these details or leave them
+                                as they are.
+                            </p>
+
+                            <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                                <div>
+                                    <label className="mb-2 block text-sm font-semibold text-[#0B2559]">
+                                        Test Date (Optional)
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        value={testedDate}
+                                        onChange={(e) => setTestedDate(e.target.value)}
+                                        className="w-full rounded-xl border border-slate-200 bg-white p-4 text-sm font-medium text-[#0B2559] outline-none focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="mb-2 block text-sm font-semibold text-[#0B2559]">
+                                        Test Time (Optional)
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        value={testedTime}
+                                        onChange={(e) => setTestedTime(e.target.value)}
+                                        className="w-full rounded-xl border border-slate-200 bg-white p-4 text-sm font-medium text-[#0B2559] outline-none focus:border-[#123B8C] focus:ring-4 focus:ring-[#EAF2FF]"
+                                    />
+                                </div>
+
+                            </div>
                         </div>
 
                         <button
