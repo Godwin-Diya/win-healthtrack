@@ -122,7 +122,6 @@ export default function HealthRecordForm() {
                     fasting,
                     result,
                     tested_at: selectedTestDateTime.toISOString(),
-                    recorded_at: new Date().toISOString(),
                 });
 
             if (insertError) {

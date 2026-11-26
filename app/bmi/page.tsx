@@ -117,7 +117,6 @@ export default function BMIPage() {
                     bmi: Number(bmi.toFixed(1)),
                     bmi_result: status,
                     tested_at: selectedTestDateTime.toISOString(),
-                    recorded_at: new Date().toISOString(),
                 });
 
             if (insertError) {

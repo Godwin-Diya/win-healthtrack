@@ -116,7 +116,6 @@ export default function BloodPressurePage() {
                     diastolic: diastolicValue,
                     blood_pressure_result: status,
                     tested_at: selectedTestDateTime.toISOString(),
-                    recorded_at: new Date().toISOString(),
                 });
 
             if (insertError) {
