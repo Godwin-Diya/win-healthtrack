@@ -286,3 +286,25 @@ export default function BloodPressurePage() {
         </main>
     );
 }
+
+
+
+
+
+
+<p>
+    This will:
+Stage your project changes.
+Create a professional Git commit documenting the feature.
+Push your changes to your GitHub main branch.
+Trigger your deployment if your hosting platform is connected to GitHub.
+2. Why this commit message is professional
+feat: is a conventional commit prefix used to identify a new feature.
+The message describes actual engineering work:
+Supabase database integration
+Timestamped health measurements
+Authenticated health-record persistence
+Glucose, blood pressure, and BMI tracking
+3. How this strengthens your CV
+Once wve completed testing and the dashboard displays both timestamps, you can describe this project professionally:
+</p>
